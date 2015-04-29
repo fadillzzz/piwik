@@ -333,9 +333,10 @@ class Manager
     }
 
     /**
-     * Deactivate plugin
+     * Deactivate a plugin. The plugin will no longer be loaded during Piwik execution.
      *
      * @param string $pluginName Name of plugin
+     * @api
      */
     public function deactivatePlugin($pluginName)
     {
@@ -478,6 +479,7 @@ class Manager
      *
      * @param string $pluginName Name of plugin
      * @throws \Exception
+     * @api
      */
     public function activatePlugin($pluginName)
     {

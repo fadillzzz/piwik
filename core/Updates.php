@@ -28,7 +28,6 @@ namespace Piwik;
  *     }
  *
  * @example core/Updates/0.4.2.php
- * @api
  */
 abstract class Updates
 {
@@ -62,6 +61,7 @@ abstract class Updates
      *                                            // and user will have to manually run the query
      *               )
      *               ```
+     * @api
      */
     public function getMigrationQueries(Updater $updater)
     {
@@ -77,6 +77,7 @@ abstract class Updates
      * See {@link Updates} for an example.
      *
      * @param Updater $updater
+     * @api
      */
     public function doUpdate(Updater $updater)
     {
