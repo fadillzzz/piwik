@@ -13,12 +13,14 @@ use Piwik\Common;
 use Piwik\DataTable;
 use Piwik\Period;
 use Piwik\Piwik;
+use Piwik\Report\ReportWidgetFactory;
 use Piwik\View;
 use Piwik\View\ViewInterface;
 use Piwik\ViewDataTable\Config as VizConfig;
 use Piwik\ViewDataTable\Manager as ViewDataTableManager;
 use Piwik\ViewDataTable\Request as ViewDataTableRequest;
 use Piwik\ViewDataTable\RequestConfig as VizRequest;
+use Piwik\Widget\WidgetsList;
 
 /**
  * The base class of all report visualizations.
@@ -205,11 +207,23 @@ abstract class ViewDataTable implements ViewInterface
             $relatedReports = $report->getRelatedReports();
             if (!empty($relatedReports)) {
                 foreach ($relatedReports as $relatedReport) {
-                    $widgetTitle = $relatedReport->getWidgetTitle();
+                    $relatedReportName = null;
 
-                    if ($widgetTitle && Common::getRequestVar('widget', 0, 'int')) {
-                        $relatedReportName = $widgetTitle;
-                    } else {
+                    // todo rethink how this works (related report and widget definition),
+                    // maybe we should just always go with the report name?
+                    if (Common::getRequestVar('widget', 0, 'int')) {
+                        $factory = new ReportWidgetFactory($relatedReport);
+                        $list    = new WidgetsList();
+                        $relatedReport->configureWidgets($list, $factory);
+                        $widgets = $list->getWidgets();
+                        // there might be many widgets and we might pick the title of the wrong one
+                        if (!empty($widgets)) {
+                            $widget = array_shift($widgets);
+                            $relatedReportName = Piwik::translate($widget->getName());
+                        }
+                    }
+
+                    if (empty($relatedReportName)) {
                         $relatedReportName = $relatedReport->getName();
                     }
 

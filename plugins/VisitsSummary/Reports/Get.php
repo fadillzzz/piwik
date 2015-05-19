@@ -13,6 +13,9 @@ use Piwik\Piwik;
 use Piwik\Plugins\CoreHome\Columns\Metrics\ActionsPerVisit;
 use Piwik\Plugins\CoreHome\Columns\Metrics\AverageTimeOnSite;
 use Piwik\Plugins\CoreHome\Columns\Metrics\BounceRate;
+use Piwik\Plugins\CoreVisualizations\Visualizations\JqplotGraph\Evolution;
+use Piwik\Report\ReportWidgetFactory;
+use Piwik\Widget\WidgetsList;
 
 class Get extends \Piwik\Plugin\Report
 {
@@ -21,7 +24,7 @@ class Get extends \Piwik\Plugin\Report
     protected function init()
     {
         parent::init();
-        $this->category      = 'VisitsSummary_VisitsSummary';
+        $this->category      = 'General_Visitors';
         $this->name          = Piwik::translate('VisitsSummary_VisitsSummary');
         $this->documentation = ''; // TODO
         $this->processedMetrics = array(
@@ -40,6 +43,26 @@ class Get extends \Piwik\Plugin\Report
 //								'sum_visit_length',
 //								'nb_visits_converted',
         $this->order = 1;
+    }
+
+    public function configureWidgets(WidgetsList $widgetsList, ReportWidgetFactory $factory)
+    {
+        $widgetsList->addWidget(
+            $factory->createWidget()
+                ->setName('General_EvolutionOverPeriod')
+                ->setSubCategory('General_Overview')
+                ->forceViewDataTable(Evolution::ID)
+                ->setAction('getEvolutionGraph')
+                ->setOrder(5)
+                ->addParameters(array('columns' => $defaultColumns = array('nb_visits')))
+        );
+
+        $widgetsList->addWidget(
+            $factory->createCustomWidget('getSparklines')
+                ->setName('General_Report')
+                ->setSubCategory('General_Overview')
+                ->setOrder(10)
+        );
     }
 
     public function getMetrics()

@@ -210,5 +210,27 @@ class WidgetConfig
         }
     }
 
+    /**
+     * Returns the unique id of an widget with the given parameters
+     *
+     * @return string
+     */
+    public function getUniqueId()
+    {
+        $widgetUniqueId = 'widget' . $this->getModule() . $this->getAction();
+
+        foreach ($this->getParameters() as $name => $value) {
+            if (is_array($value)) {
+                // use 'Array' for backward compatibility;
+                // could we switch to using $value[0]?
+                $value = 'Array';
+            }
+            $widgetUniqueId .= $name . $value;
+        }
+
+        return $widgetUniqueId;
+    }
+
+
 
 }

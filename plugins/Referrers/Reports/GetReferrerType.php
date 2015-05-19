@@ -14,6 +14,8 @@ use Piwik\Plugin\ViewDataTable;
 use Piwik\Plugins\CoreVisualizations\Visualizations\HtmlTable;
 use Piwik\Plugins\CoreVisualizations\Visualizations\JqplotGraph\Evolution;
 use Piwik\Plugins\Referrers\Columns\ReferrerType;
+use Piwik\Widget\WidgetsList;
+use Piwik\Report\ReportWidgetFactory;
 
 class GetReferrerType extends Base
 {
@@ -33,8 +35,7 @@ class GetReferrerType extends Base
         $this->constantRowsCount = true;
         $this->hasGoalMetrics = true;
         $this->order = 1;
-        $this->widgetTitle = 'General_Overview';
-        $this->subCategory = 'General_Overview';
+        $this->subCategory = 'Referrers_WidgetGetAll';
     }
 
     public function getDefaultTypeViewDataTable()
@@ -42,17 +43,30 @@ class GetReferrerType extends Base
         return HtmlTable\AllColumns::ID;
     }
 
-    public function configureWidgets(\Piwik\Widget\WidgetsList $widgetsList, \Piwik\Report\ReportWidgetFactory $factory)
+    public function configureWidgets(WidgetsList $widgetsList, ReportWidgetFactory $factory)
     {
-        $widgetsList->addWidget($factory->createWidget());
         $widgetsList->addWidget(
             $factory->createWidget()
-                ->forceViewDataTable(Evolution::ID)
-                ->addParameters(array('columns' => $defaultColumns = array('nb_visits')))
+                    ->setName('General_Overview')
+                    ->setSubCategory('Referrers_WidgetGetAll')
         );
 
         $widgetsList->addWidget(
-            $factory->createCustomWidget('Referrers', 'getSparklines')
+            $factory->createWidget()
+                ->setName('General_EvolutionOverPeriod')
+                ->setSubCategory('General_Overview')
+                ->setAction('getEvolutionGraph')
+                ->forceViewDataTable(Evolution::ID)
+                ->addParameters(array(
+                    'columns' => $defaultColumns = array('nb_visits'),
+                    'typeReferrer' => Common::REFERRER_TYPE_DIRECT_ENTRY
+                ))
+        );
+
+        $widgetsList->addWidget(
+            $factory->createCustomWidget('getSparklines')
+                ->setName('Referrers_Type')
+                ->setSubCategory('General_Overview')
                 ->setOrder(10)
         );
     }

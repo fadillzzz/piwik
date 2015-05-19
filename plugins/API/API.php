@@ -18,7 +18,6 @@ use Piwik\DataTable\Filter\ColumnDelete;
 use Piwik\DataTable\Row;
 use Piwik\Date;
 use Piwik\IP;
-use Piwik\Menu\MenuReporting;
 use Piwik\Metrics;
 use Piwik\Period;
 use Piwik\Period\Range;
@@ -27,17 +26,15 @@ use Piwik\Plugin\Category;
 use Piwik\Plugin\Dimension\VisitDimension;
 use Piwik\Plugin\Report;
 use Piwik\Plugin\SubCategory;
-use Piwik\Plugin\Widget;
 use Piwik\Plugins\API\DataTable\MergeDataTables;
 use Piwik\Plugins\CoreAdminHome\CustomLogo;
 use Piwik\Report\ReportWidgetConfig;
-use Piwik\Report\ReportWidgetFactory;
 use Piwik\Segment\SegmentExpression;
 use Piwik\Translation\Translator;
 use Piwik\Version;
 use Piwik\Widget\WidgetConfig;
 use Piwik\Widget\WidgetContainerConfig;
-use Piwik\WidgetsList;
+use Piwik\Widget\WidgetsList;
 
 require_once PIWIK_INCLUDE_PATH . '/core/Config.php';
 
@@ -377,52 +374,59 @@ class API extends \Piwik\Plugin\API
     {
         Piwik::checkUserHasViewAccess($idSite);
 
-        $list = WidgetsList::get();
-
+        $list = WidgetsList::get($idSite);
         $flat = array();
 
-        foreach ($list as $category => $widgets) {
-            foreach ($widgets as $widget) {
-                $widget['category'] = $category;
-                $flat[] = $widget;
+        $categories = $this->moveWidgetsIntoCategories($list->getWidgets());
+
+        foreach ($list->getWidgets() as $widget) {
+
+            $category   = null;
+            $subcategory = null;
+            if (isset($categories[$widget->getCategory()])) {
+                $category    = $categories[$widget->getCategory()];
+                $subcategory = $category->getSubCategory($widget->getSubCategory());
+
+                $category = array(
+                    'name'  => Piwik::translate($category->getName()),
+                    'order' => $category->getOrder(),
+                    'id'    => $category->getId()
+                );
+
+                if ($subcategory) {
+                    $subcategory = array(
+                        'name' => Piwik::translate($subcategory->getName()),
+                        'order' => $subcategory->getOrder(),
+                        'id'    => $subcategory->getId()
+                    );
+                }
             }
+
+            $item = array(
+                'name'        => Piwik::translate($widget->getName()),
+                'category'    => $category,
+                'subcategory' => $subcategory,
+                'uniqueId'    => $widget->getUniqueId(),
+                'order'       => $widget->getOrder(),
+                'parameters'  => array('module' => $widget->getModule(),
+                        'action' => $widget->getAction()
+                    ) + $widget->getParameters()
+            );
+            $flat[] = $item;
         }
 
         return $flat;
     }
 
-    private function getInitialWidgetsList($idSite)
-    {
-        $list = new \Piwik\Widget\WidgetsList();
-
-        $widgets = Widget::getAllWidgetConfigurations();
-
-        foreach ($widgets as $widget) {
-            $list->addWidget($widget);
-        }
-
-        foreach (Widget::getAllWidgetClassNames() as $widgetClass) {
-            $widgetClass::configureWidgetsList($list);
-        }
-
-        $reports = Report::getAllReports();
-        foreach ($reports as $report) {
-            $factory = new ReportWidgetFactory($report);
-            $report->configureWidgets($list, $factory);
-        }
-
-        Piwik::postEvent('Widgets.filterWidgets', array($list));
-
-        return $list;
-    }
-
     // public function getCategoryMetadata($idSite)
-    public function getCategorizedWidgetMetadata($idSite, $categoryId, $subcategoryId)
+    public function getPageMetadata($idSite, $categoryId, $subcategoryId)
     {
+        Piwik::checkUserHasViewAccess($idSite);
+
         $categoryId    = urldecode($categoryId);
         $subcategoryId = urldecode($subcategoryId);
 
-        $widgetsList = $this->getInitialWidgetsList($idSite);
+        $widgetsList = WidgetsList::get($idSite);
 
         $filtered = array();
         foreach ($widgetsList->getWidgets() as $widget) {
@@ -432,7 +436,7 @@ class API extends \Piwik\Plugin\API
         }
 
         $categories  = $this->moveWidgetsIntoCategories($filtered);
-        $categories  = $this->buildReportWidgetsMetadata($categories);
+        $categories  = $this->buildPagesMetadata($categories);
 
         if (!empty($categories)) {
             $category = array_shift($categories);
@@ -441,11 +445,13 @@ class API extends \Piwik\Plugin\API
         }
     }
 
-    public function getCategorizedWidgetsMetadata($idSite)
+    public function getPagesMetadata($idSite)
     {
-        $widgetsList = $this->getInitialWidgetsList($idSite);
+        Piwik::checkUserHasViewAccess($idSite);
+
+        $widgetsList = WidgetsList::get($idSite);
         $categories  = $this->moveWidgetsIntoCategories($widgetsList->getWidgets());
-        $categories  = $this->buildReportWidgetsMetadata($categories);
+        $categories  = $this->buildPagesMetadata($categories);
 
         return array('categories' => $categories);
     }
@@ -484,13 +490,17 @@ class API extends \Piwik\Plugin\API
             $category    = $widgetConfig->getCategory();
             $subcategory = $widgetConfig->getSubCategory();
 
-            if (!$category || !$subcategory) {
+            if (!$category) {
                 continue;
             }
 
             if (!isset($all[$category])) {
                 $all[$category] = new Category();
                 $all[$category]->setName($category);
+            }
+
+            if (!$subcategory) {
+                continue;
             }
 
             if (!$all[$category]->hasSubCategory($subcategory)) {
@@ -509,7 +519,7 @@ class API extends \Piwik\Plugin\API
      * @param Category[] $categories
      * @return array
      */
-    private function buildReportWidgetsMetadata($categories)
+    private function buildPagesMetadata($categories)
     {
         // format output, todo they need to be sorted by order!
         $metadata = array();
@@ -534,7 +544,7 @@ class API extends \Piwik\Plugin\API
                 foreach ($subcategory->getWidgetConfigs() as $widget) {
                     /** @var \Piwik\Widget\WidgetConfig $widget */
                     $config = array(
-                        'name' => $widget->getName(),
+                        'name' => Piwik::translate($widget->getName()),
                         'module' => $widget->getModule(),
                         'action' => $widget->getAction(),
                         'parameters' => $widget->getParameters(),
@@ -561,7 +571,7 @@ class API extends \Piwik\Plugin\API
                         $children = array();
                         foreach ($widget->getWidgetConfigs() as $widgetConfig) {
                             $child = array(
-                                'name' => $widgetConfig->getName(),
+                                'name' => Piwik::translate($widgetConfig->getName()),
                                 'module' => $widgetConfig->getModule(),
                                 'action' => $widgetConfig->getAction(),
                                 'parameters' => $widgetConfig->getParameters(),

@@ -41,18 +41,6 @@ class Widget
     }
 
     /**
-     * Allows you to configure previously added widgets.
-     * For instance you can remove any widgets defined by any plugin by calling the
-     * {@link \Piwik\WidgetsList::remove()} method.
-     *
-     * @param WidgetsList $widgetsList
-     * @api
-     */
-    public static function configureWidgetsList(WidgetsList $widgetsList)
-    {
-    }
-
-    /**
      * @return WidgetConfig[]
      */
     public static function getAllWidgetConfigurations()
@@ -81,7 +69,7 @@ class Widget
     /**
      * @return string[]
      */
-    public static function getAllWidgetClassNames()
+    private static function getAllWidgetClassNames()
     {
         return PluginManager::getInstance()->findMultipleComponents('Widgets', 'Piwik\\Plugin\\Widget');
     }

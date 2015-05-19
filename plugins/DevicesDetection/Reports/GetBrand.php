@@ -21,7 +21,8 @@ class GetBrand extends Base
         $this->name          = Piwik::translate('DevicesDetection_DeviceBrand');
         $this->documentation = ''; // TODO
         $this->order = 1;
-        $this->widgetTitle  = 'DevicesDetection_DeviceBrand';
+
+        $this->subCategory = 'DevicesDetection_Devices';
     }
 
     public function configureView(ViewDataTable $view)

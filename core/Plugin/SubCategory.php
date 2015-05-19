@@ -68,7 +68,8 @@ class SubCategory
     public static function getAllSubCategories()
     {
         $manager = PluginManager::getInstance();
-        $subcategories = $manager->findMultipleComponents('Reports/SubCategories', '\\Piwik\\Plugin\\Report\\SubCategory');
+        // todo move to Piwik\Widget\SubCategory
+        $subcategories = $manager->findMultipleComponents('Reports/SubCategories', '\\Piwik\\Plugin\\SubCategory');
 
         $instances = array();
         foreach ($subcategories as $subcategory) {

@@ -10,11 +10,12 @@ namespace Piwik\Plugins\Referrers\Reports;
 
 use Piwik\Piwik;
 use Piwik\Plugin\ViewDataTable;
-use Piwik\Plugins\CoreVisualizations\Visualizations\Controller;
 use Piwik\Plugins\CoreVisualizations\Visualizations\HtmlTable;
 use Piwik\Plugins\CoreVisualizations\Visualizations\JqplotGraph\Evolution;
 use Piwik\Plugins\Referrers\Columns\Keyword;
+use Piwik\Report\ReportWidgetFactory;
 use Piwik\Tracker\Visit;
+use Piwik\Widget\WidgetsList;
 
 class GetKeywords extends Base
 {
@@ -27,26 +28,7 @@ class GetKeywords extends Base
         $this->actionToLoadSubTables = 'getSearchEnginesFromKeywordId';
         $this->hasGoalMetrics = true;
         $this->order = 3;
-
-        $this->subCategory = 'Referrers_Keywords';
-    }
-
-    public function configureWidgets(\Piwik\Widget\WidgetsList $widgetsList, \Piwik\Report\ReportWidgetFactory $factory)
-    {
-        $widgetsList->addToContainerWidget('Goals_Goals', $factory->createWidget());
-        $widgetsList->addToContainerWidget('Events', $factory->createWidget());
-
-        $widgetsList->addWidget($factory->createWidget());
-        $widgetsList->addWidget(
-            $factory->createWidget()
-                    ->forceViewDataTable(Evolution::ID)
-                    ->addParameters(array('columns' => $defaultColumns = array()))
-        );
-
-        $widgetsList->addWidget(
-            $factory->createCustomWidget('Referrers', 'allReferrers')
-                    ->setOrder(10)
-        );
+        $this->subCategory = 'Referrers_SubmenuSearchEngines';
     }
 
     public function configureView(ViewDataTable $view)

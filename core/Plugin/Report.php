@@ -16,18 +16,16 @@ use Piwik\Columns\Dimension;
 use Piwik\Common;
 use Piwik\DataTable;
 use Piwik\DataTable\Filter\Sort;
-use Piwik\Menu\MenuReporting;
 use Piwik\Metrics;
 use Piwik\Cache as PiwikCache;
 use Piwik\Piwik;
 use Piwik\Plugin\Manager as PluginManager;
-use Piwik\Plugin\Category;
-use Piwik\Plugin\SubCategory;
 use Piwik\Plugins\CoreVisualizations\Visualizations\HtmlTable;
 use Piwik\Plugins\CoreVisualizations\Visualizations\JqplotGraph\Evolution;
-use Piwik\WidgetsList;
 use Piwik\ViewDataTable\Factory as ViewDataTableFactory;
 use Exception;
+use Piwik\Widget\WidgetsList;
+use Piwik\Report\ReportWidgetFactory;
 
 /**
  * Defines a new report. This class contains all information a report defines except the corresponding API method which
@@ -94,29 +92,6 @@ class Report
      * @api
      */
     protected $subCategory;
-
-    /**
-     * The translation key of the widget title. If a widget title is set, the platform will automatically configure/add
-     * a widget for this report. Alternatively, this behavior can be overwritten in {@link configureWidget()}.
-     * @var string
-     * @api
-     */
-    protected $widgetTitle;
-
-    /**
-     * Optional widget params that will be appended to the widget URL if a {@link $widgetTitle} is set.
-     * @var array
-     * @api
-     */
-    protected $widgetParams = array();
-
-    /**
-     * The translation key of the menu title. If a menu title is set, the platform will automatically add a menu item
-     * to the reporting menu. Alternatively, this behavior can be overwritten in {@link configureReportingMenu()}.
-     * @var string
-     * @api
-     */
-    protected $menuTitle;
 
     /**
      * An array of supported metrics. Eg `array('nb_visits', 'nb_actions', ...)`. Defaults to the platform default
@@ -249,10 +224,6 @@ class Report
         }
 
         $this->init();
-
-        if ($this->menuTitle) {
-            $this->subCategory = $this->menuTitle;
-        }
     }
 
     /**
@@ -360,31 +331,11 @@ class Report
         return $view->render();
     }
 
-    public function configureWidgets(\Piwik\Widget\WidgetsList $widgetsList, \Piwik\Report\ReportWidgetFactory $factory)
+    public function configureWidgets(WidgetsList $widgetsList, ReportWidgetFactory $factory)
     {
-        $widgetsList->addWidget($factory->createWidget());
-    }
-
-    /**
-     * By default a widget will be configured for this report if a {@link $widgetTitle} is set. If you want to customize
-     * the way the widget is added or modify any other behavior you can overwrite this method.
-     * @param WidgetsList $widget
-     * @deprecated since Piwik 2.15
-     */
-    public function configureWidget(WidgetsList $widget)
-    {
-    }
-
-    /**
-     * By default a menu item will be added to the reporting menu if a {@link $menuTitle} is set. If you want to
-     * customize the way the item is added or modify any other behavior you can overwrite this method. For instance
-     * in case you need to add additional url properties beside module and action which are added by default.
-     * @param \Piwik\Menu\MenuReporting $menu
-     * @api
-     * @deprecated since Piwik 2.15
-     */
-    public function configureReportingMenu(MenuReporting $menu)
-    {
+        if ($this->category && $this->subCategory) {
+            $widgetsList->addWidget($factory->createWidget());
+        }
     }
 
     /**
@@ -640,18 +591,6 @@ class Report
     }
 
     /**
-     * Gets the translated widget title if one is defined.
-     * @return string
-     * @ignore
-     */
-    public function getWidgetTitle()
-    {
-        if ($this->widgetTitle) {
-            return Piwik::translate($this->widgetTitle);
-        }
-    }
-
-    /**
      * Get the name of the report
      * @return string
      * @ignore
@@ -731,16 +670,6 @@ class Report
     public function getOrder()
     {
         return $this->order;
-    }
-
-    /**
-     * Get the menu title if one is defined.
-     * @return string
-     * @ignore
-     */
-    public function getMenuTitle()
-    {
-        return $this->menuTitle;
     }
 
     /**

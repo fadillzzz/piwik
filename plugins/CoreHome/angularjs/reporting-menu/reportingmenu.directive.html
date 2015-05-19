@@ -1,11 +1,11 @@
 <div class="Menu--dashboard">
     <ul class="Menu-tabList">
-        <li ng-repeat="category in menu | orderBy:'order'" >
+        <li ng-repeat="category in menu" >
             <a class="menuItem" ng-click="loadSubcategory(category.subcategories[0])">
                 {{ category.name }}
             </a>
             <ul>
-                <li ng-repeat="subcategory in category.subcategories | orderBy:'order'">
+                <li ng-repeat="subcategory in category.subcategories">
                     <a class="menuItem" ng-click='loadSubcategory(subcategory)'>
                         {{ subcategory.name }}
                     </a>

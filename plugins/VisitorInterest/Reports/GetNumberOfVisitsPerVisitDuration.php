@@ -29,7 +29,6 @@ class GetNumberOfVisitsPerVisitDuration extends Base
         $this->processedMetrics  = false;
         $this->constantRowsCount = true;
         $this->order = 15;
-        $this->widgetTitle  = 'VisitorInterest_WidgetLengths';
     }
 
     public function getDefaultTypeViewDataTable()

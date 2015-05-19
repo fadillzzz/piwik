@@ -50,27 +50,33 @@ class ReportWidgetFactory
 
     public function createWidget()
     {
-        $view = new ReportWidgetConfig();
-        $view->setName($this->report->getName());
-        $view->setCategory($this->report->getCategory());
-        $view->setSubCategory($this->report->getSubCategory());
-        $view->setModule($this->report->getModule());
-        $view->setAction($this->report->getAction());
+        $widget = new ReportWidgetConfig();
+        $widget->setName($this->report->getName());
+        $widget->setCategory($this->report->getCategory());
+
+        if ($this->report->getSubCategory()) {
+            $widget->setSubCategory($this->report->getSubCategory());
+        }
+
+        $widget->setModule($this->report->getModule());
+        $widget->setAction($this->report->getAction());
+
+        $orderThatListsReportsAtTheEndOfEachCategory = 100 + $this->report->getOrder();
+        $widget->setOrder($orderThatListsReportsAtTheEndOfEachCategory);
 
         $parameters = $this->report->getParameters();
         if (!empty($parameters)) {
-            $view->setParameters($parameters);
+            $widget->setParameters($parameters);
         }
 
-        return $view;
+        return $widget;
     }
 
-    public function createCustomWidget($module, $action)
+    public function createCustomWidget($action)
     {
-        $view = $this->createWidget();
-        $view->setModule($module);
-        $view->setAction($action);
+        $widget = $this->createWidget();
+        $widget->setAction($action);
 
-        return $view;
+        return $widget;
     }
 }

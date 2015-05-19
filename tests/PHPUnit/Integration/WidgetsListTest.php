@@ -9,6 +9,8 @@
 namespace Piwik\Tests\Integration;
 
 use Piwik\Access;
+use Piwik\API\Request;
+use Piwik\Widget\WidgetConfig;
 use Piwik\Plugins\Goals\API;
 use Piwik\Tests\Framework\Mock\FakeAccess;
 use Piwik\Translate;
@@ -32,9 +34,7 @@ class WidgetsListTest extends IntegrationTestCase
 
         $_GET['idSite'] = 1;
 
-        WidgetsList::_reset();
-        $widgets = WidgetsList::get();
-        WidgetsList::_reset();
+        $widgets = Request::processRequest('API.getWidgetMetadata');
 
         // check if each category has the right number of widgets
         $numberOfWidgets = array(
@@ -73,9 +73,7 @@ class WidgetsListTest extends IntegrationTestCase
 
         $_GET['idSite'] = 1;
 
-        WidgetsList::_reset();
-        $widgets = WidgetsList::get();
-        WidgetsList::_reset();
+        $widgets = Request::processRequest('API.getWidgetMetadata');
 
         // number of main categories
         $this->assertEquals(13, count($widgets));
@@ -102,9 +100,7 @@ class WidgetsListTest extends IntegrationTestCase
 
         $_GET['idSite'] = 1;
 
-        WidgetsList::_reset();
-        $widgets = WidgetsList::get();
-        WidgetsList::_reset();
+        $widgets = Request::processRequest('API.getWidgetMetadata');
 
         // number of main categories
         $this->assertEquals(14, count($widgets));
@@ -132,25 +128,25 @@ class WidgetsListTest extends IntegrationTestCase
 
         $_GET['idSite'] = 1;
 
-        WidgetsList::_reset();
-        $widgets = WidgetsList::get();
+        $widgets = Request::processRequest('API.getWidgetMetadata');
 
         $this->assertCount(14, $widgets);
         WidgetsList::remove('SEO', 'NoTeXiStInG');
 
-        $widgets = WidgetsList::get();
+        $widgets = Request::processRequest('API.getWidgetMetadata');
         $this->assertCount(14, $widgets);
 
         $this->assertArrayHasKey('SEO', $widgets);
         $this->assertCount(2, $widgets['SEO']);
 
+        // TODO FIX ALL THIS
         WidgetsList::remove('SEO', 'SEO_SeoRankings');
-        $widgets = WidgetsList::get();
+        $widgets = Request::processRequest('API.getWidgetMetadata');
 
         $this->assertCount(1, $widgets['SEO']);
 
         WidgetsList::remove('SEO');
-        $widgets = WidgetsList::get();
+        $widgets = Request::processRequest('API.getWidgetMetadata');
 
         $this->assertArrayNotHasKey('SEO', $widgets);
 
@@ -171,7 +167,12 @@ class WidgetsListTest extends IntegrationTestCase
         $_GET['idSite'] = 1;
 
         WidgetsList::_reset();
-        WidgetsList::add('Actions', 'Pages', 'Actions', 'getPageUrls');
+        $config = new WidgetConfig();
+        $config->setCategory('Actions');
+        $config->setName('Pages');
+        $config->setModule('Actions');
+        $config->setAction('getPageUrls');
+        WidgetsList::getInstance()->addWidget($config);
 
         $this->assertTrue(WidgetsList::isDefined('Actions', 'getPageUrls'));
         $this->assertFalse(WidgetsList::isDefined('Actions', 'inValiD'));

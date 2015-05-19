@@ -35,9 +35,18 @@
                         var category = piwik.broadcast.getValueFromHash('category');
                         var subcategory = piwik.broadcast.getValueFromHash('subcategory');
 
+                        if ((!category || !subcategory) && init) {
+                            var path = $location.path();
+                            if (-1 === path.indexOf('module=CoreHome&action=index')) {
+                                // eg if dashboard url is given in hash
+                                scope.pageContentUrl = '?' + $location.path().substr(1);
+                            }
+
+                            return;
+                        }
 
                         // todo also check for module & action
-                        if ((!category || !subcategory) && !init) {
+                        if (!category || !subcategory) {
                             // load old fashioned way
                             scope.pageContentUrl = '?' + $location.path().substr(1);
                             return;
@@ -47,7 +56,7 @@
                         // here for even faster performance
                         // could also extract it in service could solve it as well
                         piwikApi.fetch({
-                            method: 'API.getCategorizedWidgetMetadata',
+                            method: 'API.getPageMetadata',
                             categoryId: category,
                             subcategoryId: subcategory
                         }).then(function (response) {

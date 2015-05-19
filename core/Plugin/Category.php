@@ -59,7 +59,9 @@ class Category
 
     public function getSubCategory($subCategoryId)
     {
-        return $this->subCategories[$subCategoryId];
+        if ($this->hasSubCategory($subCategoryId)) {
+            return $this->subCategories[$subCategoryId];
+        }
     }
 
     public function getSubCategories()
@@ -76,7 +78,8 @@ class Category
     public static function getAllCategories()
     {
         $manager = PluginManager::getInstance();
-        $categories = $manager->findMultipleComponents('Reports/Categories', '\\Piwik\\Plugin\\Report\\Category');
+        // todo move to Piwik\Widget\Category
+        $categories = $manager->findMultipleComponents('Reports/Categories', '\\Piwik\\Plugin\\Category');
 
         $instances = array();
         foreach ($categories as $category) {

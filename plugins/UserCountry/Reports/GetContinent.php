@@ -11,6 +11,8 @@ namespace Piwik\Plugins\UserCountry\Reports;
 use Piwik\Piwik;
 use Piwik\Plugin\ViewDataTable;
 use Piwik\Plugins\UserCountry\Columns\Continent;
+use Piwik\Report\ReportWidgetFactory;
+use Piwik\Widget\WidgetsList;
 
 class GetContinent extends Base
 {
@@ -23,8 +25,15 @@ class GetContinent extends Base
         $this->metrics        = array('nb_visits', 'nb_uniq_visitors', 'nb_actions');
         $this->hasGoalMetrics = true;
         $this->order = 6;
-        $this->widgetTitle = Piwik::translate('UserCountry_WidgetLocation')
-                           . ' (' . Piwik::translate('UserCountry_Continent') . ')';
+
+        $this->subCategory = 'UserCountry_SubmenuLocations';
+    }
+
+    public function configureWidgets(WidgetsList $widgetsList, ReportWidgetFactory $factory)
+    {
+        $name   = Piwik::translate('UserCountry_WidgetLocation') . ' (' . Piwik::translate('UserCountry_Continent') . ')';
+        $widget = $factory->createWidget()->setName($name);
+        $widgetsList->addWidget($widget);
     }
 
     public function configureView(ViewDataTable $view)

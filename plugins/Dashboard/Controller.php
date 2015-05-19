@@ -7,13 +7,13 @@
  */
 namespace Piwik\Plugins\Dashboard;
 
+use Piwik\API\Request;
 use Piwik\Common;
 use Piwik\DataTable\Renderer\Json;
 use Piwik\Db;
 use Piwik\Piwik;
 use Piwik\Session\SessionNamespace;
 use Piwik\View;
-use Piwik\WidgetsList;
 use Piwik\FrontController;
 
 /**
@@ -39,7 +39,6 @@ class Controller extends \Piwik\Plugin\Controller
         $view = new View($template);
         $this->setGeneralVariablesView($view);
 
-        $view->availableWidgets = json_encode(WidgetsList::get());
         $view->availableLayouts = $this->getAvailableLayouts();
 
         $view->dashboardId = Common::getRequestVar('idDashboard', 1, 'int');
@@ -68,14 +67,6 @@ class Controller extends \Piwik\Plugin\Controller
             $view->dashboards = $this->dashboard->getAllDashboards($login);
         }
         return $view->render();
-    }
-
-    public function getAvailableWidgets()
-    {
-        $this->checkTokenInUrl();
-
-        Json::sendHeaderJSON();
-        return json_encode(WidgetsList::get());
     }
 
     public function getDashboardLayout($checkToken = true)

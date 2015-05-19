@@ -20,6 +20,7 @@ abstract class Base extends Report
     protected function init()
     {
         $this->category = 'General_Actions';
+        $this->subCategory = 'Contents_Contents';
     }
 
     /**

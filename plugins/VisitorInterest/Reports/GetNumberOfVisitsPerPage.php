@@ -29,7 +29,6 @@ class GetNumberOfVisitsPerPage extends Base
         $this->processedMetrics  = false;
         $this->constantRowsCount = true;
         $this->order = 20;
-        $this->widgetTitle  = 'VisitorInterest_WidgetPages';
     }
 
     public function getDefaultTypeViewDataTable()

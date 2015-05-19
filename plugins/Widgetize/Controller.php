@@ -12,7 +12,6 @@ use Piwik\API\Request;
 use Piwik\Common;
 use Piwik\FrontController;
 use Piwik\View;
-use Piwik\WidgetsList;
 
 /**
  *
@@ -22,7 +21,7 @@ class Controller extends \Piwik\Plugin\Controller
     public function index()
     {
         $view = new View('@Widgetize/index');
-        $view->availableWidgets = json_encode(WidgetsList::get());
+        $view->availableWidgets = json_encode(Request::processRequest('API.getWidgetMetadata'));
         $this->setGeneralVariablesView($view);
         return $view->render();
     }

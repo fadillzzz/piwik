@@ -9,9 +9,12 @@
 namespace Piwik\Widget;
 
 use Piwik\Cache as PiwikCache;
+use Piwik\Development;
 use Piwik\Piwik;
 use Piwik\Plugin\Report;
+use Piwik\Plugin\Widget;
 use Piwik\Plugin\Widgets;
+use Piwik\Report\ReportWidgetFactory;
 
 /**
  * Manages the global list of reports that can be displayed as dashboard widgets.
@@ -43,6 +46,8 @@ class WidgetsList
 
     public function addWidget(WidgetConfig $widget)
     {
+        $this->checkIsValidWidget($widget);
+
         $this->widgets[] = $widget;
     }
 
@@ -66,6 +71,25 @@ class WidgetsList
         return $this->widgets;
     }
 
+    private function checkIsValidWidget(WidgetConfig $widget)
+    {
+        if (!Development::isEnabled()) {
+            return;
+        }
+
+        if (!$widget->getName()) {
+            Development::error('No name is defined for added widget having method "' . $widget->getAction());
+        }
+
+        if (!$widget->getModule()) {
+            Development::error('No module is defined for added widget having name "' . $widget->getName());
+        }
+
+        if (!$widget->getAction()) {
+            Development::error('No action is defined for added widget having name "' . $widget->getName());
+        }
+    }
+
     public function addToContainerWidget($containerId, WidgetConfig $widget)
     {
         if (isset($this->container[$containerId])) {
@@ -77,5 +101,67 @@ class WidgetsList
 
             $this->containerWidgets[$containerId][] = $widget;
         }
+    }
+
+    /**
+     * Removes one or more widgets from the widget list.
+     *
+     * @param string $widgetCategory The widget category. Can be a translation token.
+     * @param string|false $widgetName The name of the widget to remove. Cannot be a
+     *                                 translation token. If not supplied, the entire category
+     *                                 will be removed.
+     */
+    public function remove($widgetCategory, $widgetName = false)
+    {
+        foreach ($this->widgets as $index => $widget) {
+            if ($widget->getCategory() === $widgetCategory) {
+                if (!$widgetName || $widget->getName() === $widgetName) {
+                    unset($this->widgets[$index]);
+                }
+            }
+        }
+    }
+
+    /**
+     * Returns `true` if a report exists in the widget list, `false` if otherwise.
+     *
+     * @param string $module The controller name of the report.
+     * @param string $action The controller action of the report.
+     * @return bool
+     */
+    public function isDefined($module, $action)
+    {
+        foreach ($this->widgets as $widget) {
+            if ($widget->getModule() === $module && $widget->getAction() === $action) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static function get()
+    {
+        $list = new static;
+
+        $widgets = Widget::getAllWidgetConfigurations();
+
+        foreach ($widgets as $widget) {
+            if ($widget->isEnabled()) {
+                $list->addWidget($widget);
+            }
+        }
+
+        $reports = Report::getAllReports();
+        foreach ($reports as $report) {
+            if ($report->isEnabled()) {
+                $factory = new ReportWidgetFactory($report);
+                $report->configureWidgets($list, $factory);
+            }
+        }
+
+        Piwik::postEvent('Widgets.filterWidgets', array($list));
+
+        return $list;
     }
 }

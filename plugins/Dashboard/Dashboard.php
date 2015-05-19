@@ -11,7 +11,7 @@ namespace Piwik\Plugins\Dashboard;
 use Piwik\Common;
 use Piwik\Db;
 use Piwik\Piwik;
-use Piwik\WidgetsList;
+use Piwik\Widget\WidgetsList;
 
 /**
  */
@@ -161,6 +161,9 @@ class Dashboard extends \Piwik\Plugin
             );
         }
 
+
+        $widgetsList = WidgetsList::get();
+
         foreach ($layoutObject->columns as &$row) {
             if (!is_array($row)) {
                 $row = array();
@@ -171,7 +174,7 @@ class Dashboard extends \Piwik\Plugin
                 if (isset($widget->parameters->module)) {
                     $controllerName = $widget->parameters->module;
                     $controllerAction = $widget->parameters->action;
-                    if (!WidgetsList::isDefined($controllerName, $controllerAction)) {
+                    if (!$widgetsList->isDefined($controllerName, $controllerAction)) {
                         unset($row[$widgetId]);
                     }
                 } else {

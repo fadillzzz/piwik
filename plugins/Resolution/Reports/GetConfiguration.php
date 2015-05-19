@@ -11,6 +11,8 @@ namespace Piwik\Plugins\Resolution\Reports;
 use Piwik\Piwik;
 use Piwik\Plugin\ViewDataTable;
 use Piwik\Plugins\Resolution\Columns\Configuration;
+use Piwik\Report\ReportWidgetFactory;
+use Piwik\Widget\WidgetsList;
 
 class GetConfiguration extends Base
 {
@@ -21,7 +23,14 @@ class GetConfiguration extends Base
         $this->name          = Piwik::translate('Resolution_WidgetGlobalVisitors');
         $this->documentation = Piwik::translate('Resolution_WidgetGlobalVisitorsDocumentation', '<br />');
         $this->order = 7;
-        $this->widgetTitle  = 'Resolution_WidgetGlobalVisitors';
+
+        $this->subCategory = 'DevicesDetection_Software';
+    }
+
+    public function configureWidgets(WidgetsList $widgetsList, ReportWidgetFactory $factory)
+    {
+        $widget = $factory->createWidget()->setName('Referrers_WidgetSocials');
+        $widgetsList->addWidget($widget);
     }
 
     public function configureView(ViewDataTable $view)

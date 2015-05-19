@@ -14,14 +14,6 @@ class VisitorsOverviewSubCategory extends SubCategory
 {
     protected $category = 'General_Visitors';
     protected $name = 'General_Overview';
-    protected $order = 99;
-
-
-
-
-    // protected $layout = '33-33-33';
-    // protected $layout = '50-50';
-    // protected $layout = '100';
-    // protected $layout = 'ByDimension';
+    protected $order = 2;
 
 }

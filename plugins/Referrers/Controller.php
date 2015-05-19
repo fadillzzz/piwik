@@ -42,6 +42,14 @@ class Controller extends \Piwik\Plugin\Controller
         $view->graphEvolutionReferrers = $this->getEvolutionGraph(Common::REFERRER_TYPE_DIRECT_ENTRY, array(), array('nb_visits'));
         $view->nameGraphEvolutionReferrers = 'Referrers.getEvolutionGraph';
 
+        return $view->render();
+    }
+
+    public function getSparklines()
+    {
+        $view = new View('@Referrers/getSparklines');
+        $this->setPeriodVariablesView($view);
+
         $nameValues = $this->getReferrersVisitorsByType();
 
         $totalVisits = array_sum($nameValues);
@@ -95,6 +103,7 @@ class Controller extends \Piwik\Plugin\Controller
 
         return $view->render();
     }
+
 
     public function allReferrers()
     {

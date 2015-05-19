@@ -7,8 +7,9 @@
  */
 namespace Piwik\Plugins\Dashboard;
 
+use Piwik\Common;
 use Piwik\Piwik;
-use Piwik\WidgetsList;
+use Piwik\Widget\WidgetsList;
 
 /**
  * This API is the <a href='http://piwik.org/docs/analytics-api/reference/' rel='noreferrer' target='_blank'>Dashboard API</a>: it gives information about dashboards.
@@ -137,7 +138,7 @@ class API extends \Piwik\Plugin\API
         $module = $widget->parameters->module;
         $action = $widget->parameters->action;
 
-        return WidgetsList::isDefined($module, $action);
+        return WidgetsList::get()->isDefined($module, $action);
     }
 
     private function widgetIsNotHidden($widget)

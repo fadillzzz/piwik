@@ -10,6 +10,7 @@ namespace Piwik\Plugin;
 
 use Piwik\Development;
 use Piwik\Plugin\Manager as PluginManager;
+use Piwik\Widget\WidgetConfig;
 use Piwik\WidgetsList;
 
 /**
@@ -19,10 +20,14 @@ use Piwik\WidgetsList;
  * For an example, see the {@link https://github.com/piwik/piwik/blob/master/plugins/ExamplePlugin/Widgets.php} plugin.
  *
  * @api
+ * @deprecated since Piwik 2.15, use `Piwik\Plugin\Widget` instead.
  */
 class Widgets
 {
     protected $category = '';
+    /**
+     * @var WidgetConfig[]
+     */
     protected $widgets  = array();
 
     public function __construct()
@@ -68,11 +73,14 @@ class Widgets
     {
         $this->checkIsValidWidget($name, $method);
 
-        $this->widgets[] = array('category' => $category,
-                                 'name'     => $name,
-                                 'params'   => $parameters,
-                                 'method'   => $method,
-                                 'module'   => $this->getModule());
+        $config = new WidgetConfig();
+        $config->setCategory($category);
+        $config->setName($name);
+        $config->setModule($this->getModule());
+        $config->setAction($method);
+        $config->setParameters($parameters);
+
+        $this->widgets[] = $config;
     }
 
     /**

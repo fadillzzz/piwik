@@ -2,13 +2,11 @@
     <div ng-if="pageContentUrl" ng-include="pageContentUrl"></div>
 
     <div ng-if="evolutionReport">
-        <h2 ng-if="evolutionReport.name" piwik-enriched-headline>{{ evolutionReport.name }}</h2>
-        <div ng-include="evolutionReport.html_url"></div>
+        <div piwik-widget widget="evolutionReport"></div>
     </div>
 
     <div ng-if="sparklineReport">
-        <h2 ng-if="sparklineReport.name" piwik-enriched-headline>{{ sparklineReport.name }}</h2>
-        <div ng-include="sparklineReport.html_url"></div>
+        <div piwik-widget widget="sparklineReport"></div>
     </div>
 
     <div ng-repeat="widget in widgets">

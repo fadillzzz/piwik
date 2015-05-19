@@ -18,7 +18,7 @@ use Piwik\Menu\MenuReporting;
 use Piwik\Notification\Manager as NotificationManager;
 use Piwik\Piwik;
 use Piwik\Plugin\Report;
-use Piwik\Plugin\ReportWidgetConfig;
+use Piwik\Plugin\Widget;
 use Piwik\Plugins\CoreHome\DataTableRowAction\MultiRowEvolution;
 use Piwik\Plugins\CoreHome\DataTableRowAction\RowEvolution;
 use Piwik\Plugins\CorePluginsAdmin\MarketplaceApiClient;
@@ -31,7 +31,6 @@ use Piwik\Url;
 use Piwik\View;
 use Piwik\ViewDataTable\Manager as ViewDataTableManager;
 use Piwik\Plugin\Widgets as PluginWidgets;
-use Piwik\ViewDataTable\Factory as ViewDataTableFactory;
 
 class Controller extends \Piwik\Plugin\Controller
 {
@@ -62,7 +61,13 @@ class Controller extends \Piwik\Plugin\Controller
         return $report->render();
     }
 
-    public function renderWidget(PluginWidgets $widget, $method)
+    /**
+     * @param PluginWidgets|Widget $widget
+     * @param string $method
+     * @return mixed
+     * @throws Exception
+     */
+    public function renderWidget($widget, $method)
     {
         Piwik::checkUserHasSomeViewAccess();
 
@@ -114,7 +119,6 @@ class Controller extends \Piwik\Plugin\Controller
     {
         $view = new View('@CoreHome/getDefaultIndexView');
         $this->setGeneralVariablesView($view);
-        $view->menu = MenuReporting::getInstance()->getMenu();
         $view->dashboardSettingsControl = new DashboardManagerControl();
         $view->content = '';
         return $view;

@@ -9,12 +9,14 @@
  * Example:
  * <div piwik-reporting-menu></div>
  */
+
 (function () {
     angular.module('piwikApp').directive('piwikReportingMenu', piwikReportingMenu);
 
     piwikReportingMenu.$inject = ['$document', 'piwik', '$filter', 'piwikApi', '$location'];
 
     function piwikReportingMenu($document, piwik, $filter, piwikApi, $location){
+
         return {
             restrict: 'A',
             scope: {
@@ -50,7 +52,7 @@
                     };
 
                     piwikApi.bulkFetch([
-                        {method: 'API.getCategorizedWidgetsMetadata'},
+                        {method: 'API.getPagesMetadata'},
                         {method: 'Dashboard.getDashboards'}
                     ]).then(function (response) {
                         var menu = [];
@@ -61,6 +63,8 @@
                             angular.forEach(category.subcategories, function (subcategory) {
                                 subcategory.html_url = 'module=CoreHome&action=index&category=' + categoryId + '&subcategory='+ subcategory.id;
                             });
+
+                            category.subcategories = $filter('orderBy')(category.subcategories, 'order');
 
                             menu.push(category);
                         });
@@ -80,7 +84,7 @@
                         });
                         menu.push(dashboards);
 
-                        scope.menu = menu;
+                        scope.menu = $filter('orderBy')(menu, 'order');
                     });
 
                 };
