@@ -119,17 +119,6 @@ class MenuReporting extends MenuAbstract
      */
     public function getMenu()
     {
-        if (!$this->menu) {
-
-            /**
-             * @ignore
-             * @deprecated
-             */
-            // Piwik::postEvent('Menu.Reporting.addItems', array());
-
-
-        }
-
-        return parent::getMenu();
+        return array();
     }
 }

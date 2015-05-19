@@ -71,7 +71,7 @@
                                 }
                             });
 
-                            // todo sort widgets by order?
+                            widgets = $filter('orderBy')(widgets, 'order');
 
                             var groupedWidgets = [];
 

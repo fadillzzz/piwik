@@ -386,19 +386,10 @@ class API extends \Piwik\Plugin\API
             if (isset($categories[$widget->getCategory()])) {
                 $category    = $categories[$widget->getCategory()];
                 $subcategory = $category->getSubCategory($widget->getSubCategory());
-
-                $category = array(
-                    'name'  => Piwik::translate($category->getName()),
-                    'order' => $category->getOrder(),
-                    'id'    => $category->getId()
-                );
+                $category    = $this->buildCategoryMetadata($category);
 
                 if ($subcategory) {
-                    $subcategory = array(
-                        'name' => Piwik::translate($subcategory->getName()),
-                        'order' => $subcategory->getOrder(),
-                        'id'    => $subcategory->getId()
-                    );
+                    $subcategory = $this->buildSubCategoryMetadata($subcategory);
                 }
             }
 
@@ -416,6 +407,24 @@ class API extends \Piwik\Plugin\API
         }
 
         return $flat;
+    }
+
+    private function buildCategoryMetadata(Category $category)
+    {
+        return array(
+            'name'  => Piwik::translate($category->getName()),
+            'order' => $category->getOrder(),
+            'id'    => $category->getId()
+        );
+    }
+
+    private function buildSubCategoryMetadata(SubCategory $category)
+    {
+        return array(
+            'name'  => Piwik::translate($category->getName()),
+            'order' => $category->getOrder(),
+            'id'    => $category->getId()
+        );
     }
 
     // public function getCategoryMetadata($idSite)
@@ -439,9 +448,7 @@ class API extends \Piwik\Plugin\API
         $categories  = $this->buildPagesMetadata($categories);
 
         if (!empty($categories)) {
-            $category = array_shift($categories);
-
-            return array_shift($category['subcategories']);
+            return array_shift($categories);
         }
     }
 
@@ -453,7 +460,7 @@ class API extends \Piwik\Plugin\API
         $categories  = $this->moveWidgetsIntoCategories($widgetsList->getWidgets());
         $categories  = $this->buildPagesMetadata($categories);
 
-        return array('categories' => $categories);
+        return $categories;
     }
 
     /**
@@ -525,26 +532,19 @@ class API extends \Piwik\Plugin\API
         $metadata = array();
 
         foreach ($categories as $category) {
-
-            $ca = array(
-                'id' => $category->getId(),
-                'name' => Piwik::translate($category->getName()),
-                'order' => $category->getOrder(),
-                'subcategories' => array()
-            );
-
             foreach ($category->getSubCategories() as $subcategory) {
-                $cat = array(
-                    'id' => $subcategory->getId(),
-                    'name' => Piwik::translate($subcategory->getName()),
-                    'order'   => $subcategory->getOrder(),
-                    'widgets' => array(),
+                $ca = array(
+                    'uniqueId' => $category->getName() . '.' . $subcategory->getName(),
+                    'category' => $this->buildCategoryMetadata($category),
+                    'subcategory' => $this->buildSubCategoryMetadata($subcategory),
+                    'widgets' => array()
                 );
 
                 foreach ($subcategory->getWidgetConfigs() as $widget) {
                     /** @var \Piwik\Widget\WidgetConfig $widget */
                     $config = array(
                         'name' => Piwik::translate($widget->getName()),
+                        'order' => $widget->getOrder(),
                         'module' => $widget->getModule(),
                         'action' => $widget->getAction(),
                         'parameters' => $widget->getParameters(),
@@ -576,6 +576,7 @@ class API extends \Piwik\Plugin\API
                                 'action' => $widgetConfig->getAction(),
                                 'parameters' => $widgetConfig->getParameters(),
                                 'viewDataTable' => $widgetConfig->getDefaultView(),
+                                'order' => $widgetConfig->getOrder(),
                                 'widget_url' => '?' . http_build_query($widgetConfig->getParameters()),
                                 'processed_url' => '?' . http_build_query(array(
                                         'module' => 'API',
@@ -589,16 +590,12 @@ class API extends \Piwik\Plugin\API
                         $config['children'] = $children;
                     }
 
-                    $cat['widgets'][] = $config;
+                    $ca['widgets'][] = $config;
                 }
 
-                if (!empty($cat['widgets'])) {
-                    $ca['subcategories'][] = $cat;
+                if (!empty($ca['widgets'])) {
+                    $metadata[] = $ca;
                 }
-            }
-
-            if (!empty($ca['subcategories'])) {
-                $metadata[] = $ca;
             }
         }
 

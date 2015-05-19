@@ -57,11 +57,25 @@
                     ]).then(function (response) {
                         var menu = [];
 
-                        angular.forEach(response[0].categories, function (category, key) {
+                        var categoriesHandled = {};
+                        angular.forEach(response[0], function (page, key) {
+                            var category   = page.category;
                             var categoryId = category.id;
 
-                            angular.forEach(category.subcategories, function (subcategory) {
-                                subcategory.html_url = 'module=CoreHome&action=index&category=' + categoryId + '&subcategory='+ subcategory.id;
+                            if (categoriesHandled[categoryId]) {
+                                return;
+                            }
+
+                            categoriesHandled[categoryId] = true;
+
+                            category.subcategories = [];
+
+                            angular.forEach(response[0], function (page, key) {
+                                if (page.category.id === categoryId) {
+                                    var subcategory = page.subcategory;
+                                    subcategory.html_url = 'module=CoreHome&action=index&category=' + categoryId + '&subcategory='+ subcategory.id;
+                                    category.subcategories.push(subcategory);
+                                }
                             });
 
                             category.subcategories = $filter('orderBy')(category.subcategories, 'order');
