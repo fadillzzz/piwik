@@ -13,7 +13,6 @@ use Piwik\Common;
 use Piwik\DataTable;
 use Piwik\DataTable\Row;
 use Piwik\Piwik;
-use Piwik\Plugins\Actions\API as APIActions;
 use Piwik\Site;
 use Piwik\Translation\Translator;
 use Piwik\View;
@@ -40,14 +39,6 @@ class Controller extends \Piwik\Plugin\Controller
         $view = new View('@VisitsSummary/index');
         $this->setPeriodVariablesView($view);
         $view->graphEvolutionVisitsSummary = $this->getEvolutionGraph(array(), array('nb_visits'));
-        $this->setSparklinesAndNumbers($view);
-        return $view->render();
-    }
-
-    public function getSparklines()
-    {
-        $view = new View('@VisitsSummary/getSparklines');
-        $this->setPeriodVariablesView($view);
         $this->setSparklinesAndNumbers($view);
         return $view->render();
     }
@@ -140,21 +131,21 @@ class Controller extends \Piwik\Plugin\Controller
 
     protected function setSparklinesAndNumbers($view)
     {
-        $view->urlSparklineNbVisits = $this->getUrlSparkline('getEvolutionGraph', array('columns' => $view->displayUniqueVisitors ? array('nb_visits', 'nb_uniq_visitors') : array('nb_visits')));
-        $view->urlSparklineNbUsers = $this->getUrlSparkline('getEvolutionGraph', array('columns' => array('nb_users')));
-        $view->urlSparklineNbPageviews = $this->getUrlSparkline('getEvolutionGraph', array('columns' => array('nb_pageviews', 'nb_uniq_pageviews')));
-        $view->urlSparklineNbDownloads = $this->getUrlSparkline('getEvolutionGraph', array('columns' => array('nb_downloads', 'nb_uniq_downloads')));
-        $view->urlSparklineNbOutlinks = $this->getUrlSparkline('getEvolutionGraph', array('columns' => array('nb_outlinks', 'nb_uniq_outlinks')));
-        $view->urlSparklineAvgVisitDuration = $this->getUrlSparkline('getEvolutionGraph', array('columns' => array('avg_time_on_site')));
-        $view->urlSparklineMaxActions = $this->getUrlSparkline('getEvolutionGraph', array('columns' => array('max_actions')));
-        $view->urlSparklineActionsPerVisit = $this->getUrlSparkline('getEvolutionGraph', array('columns' => array('nb_actions_per_visit')));
-        $view->urlSparklineBounceRate = $this->getUrlSparkline('getEvolutionGraph', array('columns' => array('bounce_rate')));
-        $view->urlSparklineAvgGenerationTime = $this->getUrlSparkline('getEvolutionGraph', array('columns' => array('avg_time_generation')));
+        $view->urlSparklineNbVisits = $this->getUrlSparkline('get', array('columns' => $view->displayUniqueVisitors ? array('nb_visits', 'nb_uniq_visitors') : array('nb_visits')));
+        $view->urlSparklineNbUsers = $this->getUrlSparkline('get', array('columns' => array('nb_users')));
+        $view->urlSparklineNbPageviews = $this->getUrlSparkline('get', array('columns' => array('nb_pageviews', 'nb_uniq_pageviews')));
+        $view->urlSparklineNbDownloads = $this->getUrlSparkline('get', array('columns' => array('nb_downloads', 'nb_uniq_downloads')));
+        $view->urlSparklineNbOutlinks = $this->getUrlSparkline('get', array('columns' => array('nb_outlinks', 'nb_uniq_outlinks')));
+        $view->urlSparklineAvgVisitDuration = $this->getUrlSparkline('get', array('columns' => array('avg_time_on_site')));
+        $view->urlSparklineMaxActions = $this->getUrlSparkline('get', array('columns' => array('max_actions')));
+        $view->urlSparklineActionsPerVisit = $this->getUrlSparkline('get', array('columns' => array('nb_actions_per_visit')));
+        $view->urlSparklineBounceRate = $this->getUrlSparkline('get', array('columns' => array('bounce_rate')));
+        $view->urlSparklineAvgGenerationTime = $this->getUrlSparkline('get', array('columns' => array('avg_time_generation')));
 
         $idSite = Common::getRequestVar('idSite');
         $displaySiteSearch = Site::isSiteSearchEnabledFor($idSite);
         if ($displaySiteSearch) {
-            $view->urlSparklineNbSearches = $this->getUrlSparkline('getEvolutionGraph', array('columns' => array('nb_searches', 'nb_keywords')));
+            $view->urlSparklineNbSearches = $this->getUrlSparkline('get', array('columns' => array('nb_searches', 'nb_keywords')));
         }
         $view->displaySiteSearch = $displaySiteSearch;
 

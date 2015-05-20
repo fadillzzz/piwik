@@ -484,6 +484,8 @@ class API extends \Piwik\Plugin\API
         if (!empty($categories)) {
             return array_shift($categories);
         }
+
+        return new \stdClass();
     }
 
     public function getPagesMetadata($idSite)

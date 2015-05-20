@@ -23,12 +23,18 @@
             compile: function (element, attrs) {
 
                 return function (scope, element, attrs, ngModel) {
-
-                    scope.renderPage = function (init) {
+                    function resetPage(scope)
+                    {
                         scope.widgets = [];
                         scope.pageContentUrl  = '';
-                        scope.evolutionReport = '';
-                        scope.sparklineReport = '';
+                        scope.evolutionReports = [];
+                        scope.sparklineReports = [];
+                    }
+
+                    resetPage(scope);
+
+                    scope.renderPage = function (init) {
+                        resetPage(scope);
 
                         // all this should be done via ng routes, url depends otherwise on translated category/subcategory which is no good
                         // this might also fix related reports?!? we need to generate module/action for category/subcategory!
@@ -63,9 +69,9 @@
                             var widgets = [];
                             angular.forEach(response.widgets, function (widget) {
                                 if (widget.viewDataTable && widget.viewDataTable === 'graphEvolution') {
-                                    scope.evolutionReport = widget;
+                                    scope.evolutionReports.push(widget);
                                 } else if (widget.viewDataTable && widget.viewDataTable === 'sparklines') {
-                                    widget.sparklineReport = widget;
+                                    scope.sparklineReports.push(widget);
                                 } else {
                                     widgets.push(widget);
                                 }

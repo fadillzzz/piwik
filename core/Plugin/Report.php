@@ -553,6 +553,19 @@ class Report
             $report['constantRowsCount'] = $this->constantRowsCount;
         }
 
+        $relatedReports = $this->getRelatedReports();
+        if (!empty($relatedReports)) {
+            $report['relatedReports'] = array();
+            foreach ($relatedReports as $relatedReport) {
+                $report['relatedReports'][] = array(
+                    'name' => $relatedReport->getName(),
+                    'module' => $relatedReport->getModule(),
+                    'action' => $relatedReport->getAction()
+                );
+
+            }
+        }
+
         $report['order'] = $this->order;
 
         return $report;

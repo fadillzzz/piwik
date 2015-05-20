@@ -62,16 +62,15 @@ class Controller extends \Piwik\Plugin\Controller
     }
 
     /**
-     * @param PluginWidgets|Widget $widget
-     * @param string $method
+     * @param Widget $widget
      * @return mixed
      * @throws Exception
      */
-    public function renderWidget($widget, $method)
+    public function renderWidget($widget)
     {
         Piwik::checkUserHasSomeViewAccess();
 
-        return $widget->$method();
+        return $widget->render();
     }
 
     function redirectToCoreHomeIndex()

@@ -13,6 +13,7 @@ use Piwik\Piwik;
 use Piwik\Plugin\ViewDataTable;
 use Piwik\Plugins\CoreVisualizations\Visualizations\HtmlTable;
 use Piwik\Plugins\CoreVisualizations\Visualizations\JqplotGraph\Evolution;
+use Piwik\Plugins\CoreVisualizations\Visualizations\Sparklines;
 use Piwik\Plugins\Referrers\Columns\ReferrerType;
 use Piwik\Widget\WidgetsList;
 use Piwik\Report\ReportWidgetFactory;
@@ -64,6 +65,14 @@ class GetReferrerType extends Base
         );
 
         $widgetsList->addWidget(
+            $factory->createWidget()
+                ->forceViewDataTable(Sparklines::ID)
+                ->setName('Referrers_Type')
+                ->setSubCategory('General_Overview')
+                ->setOrder(10)
+        );
+
+        $widgetsList->addWidget(
             $factory->createCustomWidget('getSparklines')
                 ->setName('Referrers_Type')
                 ->setSubCategory('General_Overview')
@@ -101,6 +110,11 @@ class GetReferrerType extends Base
 
         if ($view->isViewDataTableId(HtmlTable::ID)) {
             $view->config->disable_subtable_when_show_goals = true;
+        }
+
+        if ($view->isViewDataTableId(Sparklines::ID)) {
+            $view->config->addSparklineMetricsToDisplay();
+            $view->requestConfig->disable_queued_filters = true;
         }
 
         if ($view->isViewDataTableId(Evolution::ID)) {

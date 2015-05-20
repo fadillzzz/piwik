@@ -1,9 +1,14 @@
 <link rel="stylesheet" type="text/css" href="plugins/Goals/stylesheets/goals.css"/>
+
+{% if not onlyConversionOverview %}
 {% include "@Goals/_titleAndEvolutionGraph.twig" | raw %}
+{% endif %}
 
 <div class="clear"></div>
 {% if nb_conversions > 0 %}
+    {% if not onlyConversionOverview %}
     <h2>{{ 'Goals_ConversionsOverview'|translate }}</h2>
+    {% endif %}
     <ul class="ulGoalTopElements">
         {% if ecommerce is not defined %}
             {% if topDimensions.country is defined %}

@@ -10,6 +10,9 @@ namespace Piwik\Plugins\Goals\Reports;
 
 use Piwik\Common;
 use Piwik\Piwik;
+use Piwik\Plugin\ViewDataTable;
+use Piwik\Plugins\CoreVisualizations\Visualizations\JqplotGraph\Evolution;
+use Piwik\Plugins\CoreVisualizations\Visualizations\Sparklines;
 use Piwik\Plugins\Goals\API;
 use Piwik\Report\ReportWidgetFactory;
 use Piwik\Widget\WidgetsList;
@@ -31,21 +34,103 @@ class Get extends Base
 
     public function configureWidgets(WidgetsList $widgetsList, ReportWidgetFactory $factory)
     {
+        $orderId = 1;
+
         $idSite = Common::getRequestVar('idSite', null, 'int');
         $goals  = API::getInstance()->getGoals($idSite);
+
+        $config = $factory->createWidget();
+        $config->forceViewDataTable(Evolution::ID);
+        $config->setSubCategory('General_Overview');
+        $config->setName('General_EvolutionOverPeriod');
+        $config->setOrder(++$orderId);
+        $widgetsList->addWidget($config);
+
+        $config = $factory->createWidget();
+        $config->forceViewDataTable(Sparklines::ID);
+        $config->setSubCategory('General_Overview');
+        $config->setName('');
+        $config->setOrder(++$orderId);
+        $widgetsList->addWidget($config);
 
         if (count($goals) > 0) {
             foreach ($goals as $goal) {
                 $name   = Common::sanitizeInputValue($goal['name']);
                 $params = array('idGoal' => $goal['idgoal']);
 
+                $goalTranslated = Piwik::translate('Goals_GoalX', array($name));
+
+                $config = $factory->createWidget();
+                $config->setName($goalTranslated);
+                $config->setSubCategory($name);
+                $config->forceViewDataTable(Evolution::ID);
+                $config->setParameters($params);
+                $config->setOrder(++$orderId);
+                $widgetsList->addWidget($config);
+
                 $config = $factory->createWidget();
                 $config->setSubCategory($name);
-                $config->setName($name);
-                $config->setModule('Goals');
-                $config->setAction('widgetGoalReport');
+                $config->setName('');
+                $config->forceViewDataTable(Sparklines::ID);
                 $config->setParameters($params);
+                $config->setOrder(++$orderId);
                 $widgetsList->addWidget($config);
+
+
+                $config = $factory->createWidget();
+                $config->setName($goalTranslated);
+                $config->setSubCategory('General_Overview');
+                $config->forceViewDataTable(Sparklines::ID);
+                $config->setParameters($params);
+                $config->setOrder(++$orderId);
+                $config->addParameters(array('allow_multiple' => (int) $goal['allow_multiple']));
+                $widgetsList->addWidget($config);
+
+
+                $config = $factory->createWidget();
+                $config->setAction('goalConversionsOverview');
+                $config->setSubCategory($name);
+                $config->setName('Goals_ConversionsOverview');
+                $config->setParameters($params);
+                $config->setOrder(++$orderId);
+                $widgetsList->addWidget($config);
+            }
+        }
+
+    }
+
+    public function configureView(ViewDataTable $view)
+    {
+        if ($view->isViewDataTableId(Sparklines::ID)) {
+            $idGoal = Common::getRequestVar('idGoal', 0, 'int');
+
+            if (empty($idGoal)) {
+
+                $view->config->addSparklineMetricsToDisplay(array('nb_conversions'));
+                $view->config->addSparklineMetricsToDisplay(array('conversion_rate'));
+                $view->config->addSparklineMetricsToDisplay(array('revenue'));
+
+                $view->config->addTranslations(array(
+                    'nb_conversions' => Piwik::translate('Goals_Conversions'),
+                    'conversion_rate' => Piwik::translate('Goals_OverallConversionRate'),
+                    'revenue' => Piwik::translate('Goals_OverallRevenue'),
+                ));
+
+            } else {
+                $allowMultiple = Common::getRequestVar('allow_multiple', 0, 'int');
+
+                $view->config->addSparklineMetricsToDisplay(array('nb_conversions'));
+
+                if ($allowMultiple) {
+                    $view->config->addSparklineMetricsToDisplay(array('nb_visits_converted'));
+                }
+
+                $view->config->addSparklineMetricsToDisplay(array('conversion_rate'));
+                $view->config->addTranslations(array(
+                    'nb_conversions' => Piwik::translate('Goals_Conversions'),
+                    'nb_visits_converted' => Piwik::translate('General_NVisits'),
+                    'conversion_rate' => Piwik::translate('Goals_ConversionRate'),
+                ));
             }
         }
     }

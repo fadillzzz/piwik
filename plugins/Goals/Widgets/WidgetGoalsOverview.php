@@ -17,5 +17,6 @@ class WidgetGoalsOverview extends \Piwik\Plugin\Widget
         $config->setCategory('Goals_Goals');
         $config->setSubCategory('General_Overview');
         $config->setName('Goals_GoalsOverview');
+        $config->disable();
     }
 }

@@ -34,10 +34,7 @@ class GetContinent extends Base
     {
         $widgetsList->addContainer($factory->createContainerWidget('Continent'));
 
-        // $name   = Piwik::translate('UserCountry_WidgetLocation') . ' (' . Piwik::translate('UserCountry_Continent') . ')';
-        // $widget = $factory->createWidget()->setName($name);
-        $widget = $factory->createWidget();
-        $widgetsList->addToContainerWidget('Continent', $widget);
+        $widgetsList->addToContainerWidget('Continent', $factory->createWidget());
 
         $widget = $factory->createWidget()->setAction('getDistinctCountries')->setName('');
         $widgetsList->addToContainerWidget('Continent', $widget);

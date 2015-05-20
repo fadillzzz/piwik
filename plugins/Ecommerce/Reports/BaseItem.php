@@ -18,6 +18,8 @@ use Piwik\Plugins\Goals\Goals;
 use Piwik\Plugins\Goals\Columns\Metrics\AveragePrice;
 use Piwik\Plugins\Goals\Columns\Metrics\AverageQuantity;
 use Piwik\Plugins\Goals\Columns\Metrics\ProductConversionRate;
+use Piwik\Report\ReportWidgetFactory;
+use Piwik\Widget\WidgetsList;
 
 abstract class BaseItem extends Base
 {
@@ -60,6 +62,11 @@ abstract class BaseItem extends Base
         }
 
         return array();
+    }
+
+    public function configureWidgets(WidgetsList $widgetsList, ReportWidgetFactory $factory)
+    {
+        $widgetsList->addToContainerWidget('Products', $factory->createWidget());
     }
 
     public function configureView(ViewDataTable $view)

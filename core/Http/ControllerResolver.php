@@ -57,11 +57,6 @@ class ControllerResolver
             return $controller;
         }
 
-        $controller = $this->createReportMenuController($module, $action, $parameters);
-        if ($controller) {
-            return $controller;
-        }
-
         throw new Exception(sprintf("Action '%s' not found in the module '%s'", $action, $module));
     }
 
@@ -89,18 +84,10 @@ class ControllerResolver
         $widget = Widget::factory($module, $action);
 
         if (!$widget) {
-            $widget = Widgets::factory($module, $action);
-            
-            if (!$widget) {
-                return null;
-            }
-
-            $parameters['widget'] = $widget;
-            $parameters['method'] = $action;
-        } else {
-            $parameters['widget'] = $widget;
-            $parameters['method'] = 'render';
+            return;
         }
+
+        $parameters['widget'] = $widget;
 
         return array($this->createCoreHomeController(), 'renderWidget');
     }
@@ -116,31 +103,6 @@ class ControllerResolver
         $parameters['report'] = $report;
 
         return array($this->createCoreHomeController(), 'renderReportWidget');
-    }
-
-    private function createReportMenuController($module, $action, array &$parameters)
-    {
-        if (!$this->isReportMenuAction($action)) {
-            return null;
-        }
-
-        $action = lcfirst(substr($action, 4)); // menuGetPageUrls => getPageUrls
-        $report = Report::factory($module, $action);
-
-        if (!$report) {
-            return null;
-        }
-
-        $parameters['report'] = $report;
-
-        return array($this->createCoreHomeController(), 'renderReportMenu');
-    }
-
-    private function isReportMenuAction($action)
-    {
-        $startsWithMenu = (Report::PREFIX_ACTION_IN_MENU === substr($action, 0, strlen(Report::PREFIX_ACTION_IN_MENU)));
-
-        return !empty($action) && $startsWithMenu;
     }
 
     private function createCoreHomeController()

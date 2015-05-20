@@ -98,6 +98,7 @@ class Controller extends \Piwik\Plugin\Controller
     protected function getGoalReportView($idGoal = false)
     {
         $view = new View('@Goals/getGoalReportView');
+        $view->onlyConversionOverview = false;
         if ($idGoal == Piwik::LABEL_ID_GOAL_IS_ECOMMERCE_ORDER) {
             $goalDefinition['name'] = $this->translator->translate('Goals_Ecommerce');
             $goalDefinition['allow_multiple'] = true;
@@ -173,6 +174,14 @@ class Controller extends \Piwik\Plugin\Controller
     {
         $view = $this->getOverviewView();
         $view->displayFullReport = false;
+        return $view->render();
+    }
+
+    public function goalConversionsOverview()
+    {
+        $view = $this->getGoalReportView($idGoal = Common::getRequestVar('idGoal', null, 'string'));
+        $view->displayFullReport = false;
+        $view->onlyConversionOverview = true;
         return $view->render();
     }
 
