@@ -82,12 +82,14 @@
                                 for (var i = 0; i < widgets.length; i++) {
                                     var widget = widgets[i];
 
-                                    if (widget.isContainer) {
+                                    if (widget.isContainer && widget.layout && widget.layout === 'ByDimension') {
+                                        widget.widgets = $filter('orderBy')(widget.widgets, 'order');
+
                                         groupedWidgets.push(widget);
                                     } else {
                                         var group = [widget];
                                         // we move widgets into groups of 2 (the last one before a container can only contain 1)
-                                        if (widgets[i+1] && !widgets[i+1].isContainer) {
+                                        if (widgets[i+1] && (!widgets[i+1].isContainer || widget.layout !== 'ByDimension')) {
                                             i++;
                                             group.push(widgets[i]);
                                         }

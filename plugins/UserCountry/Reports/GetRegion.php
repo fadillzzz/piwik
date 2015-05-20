@@ -31,8 +31,9 @@ class GetRegion extends Base
 
     public function configureWidgets(WidgetsList $widgetsList, ReportWidgetFactory $factory)
     {
-        $name   = Piwik::translate('UserCountry_WidgetLocation') . ' (' . Piwik::translate('UserCountry_Region') . ')';
-        $widget = $factory->createWidget()->setName($name);
+        // $name   = Piwik::translate('UserCountry_WidgetLocation') . ' (' . Piwik::translate('UserCountry_Region') . ')';
+        // $widget = $factory->createWidget()->setName($name);
+        $widget = $factory->createWidget();
         $widgetsList->addWidget($widget);
     }
 

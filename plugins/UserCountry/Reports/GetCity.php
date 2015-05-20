@@ -30,9 +30,9 @@ class GetCity extends Base
 
     public function configureWidgets(WidgetsList $widgetsList, ReportWidgetFactory $factory)
     {
-        $name   = Piwik::translate('UserCountry_WidgetLocation') . ' (' . Piwik::translate('UserCountry_City') . ')';
-        $widget = $factory->createWidget()->setName($name);
-        $widgetsList->addWidget($widget);
+        //$name   = Piwik::translate('UserCountry_WidgetLocation') . ' (' . Piwik::translate('UserCountry_City') . ')';
+        // $widget = $factory->createWidget()->setName($name);
+        $widgetsList->addWidget($factory->createWidget());
     }
 
     public function configureView(ViewDataTable $view)

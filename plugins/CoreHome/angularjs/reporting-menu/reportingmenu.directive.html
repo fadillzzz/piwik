@@ -1,12 +1,16 @@
 <div class="Menu--dashboard">
     <ul class="Menu-tabList">
-        <li ng-repeat="category in menu" >
-            <a class="menuItem" ng-click="loadSubcategory(category.subcategories[0])">
+        <li ng-repeat="category in menu"
+            ng-class="{'sfActive': category.active, 'sfHover': category.hover}"
+            ng-mouseenter="enterCategory(category)"
+            ng-mouseleave="leaveCategory(category)">
+            <a class="menuItem" ng-click="loadSubcategory(category, category.subcategories[0])">
                 {{ category.name }}
             </a>
             <ul>
-                <li ng-repeat="subcategory in category.subcategories">
-                    <a class="menuItem" ng-click='loadSubcategory(subcategory)'>
+                <li ng-repeat="subcategory in category.subcategories"
+                    ng-class="{'sfHover': subcategory.active}">
+                    <a class="menuItem" ng-click='loadSubcategory(category, subcategory)'>
                         {{ subcategory.name }}
                     </a>
                 </li>

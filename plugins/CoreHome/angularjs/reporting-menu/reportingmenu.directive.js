@@ -13,9 +13,9 @@
 (function () {
     angular.module('piwikApp').directive('piwikReportingMenu', piwikReportingMenu);
 
-    piwikReportingMenu.$inject = ['$document', 'piwik', '$filter', 'piwikApi', '$location'];
+    piwikReportingMenu.$inject = ['$document', 'piwik', '$filter', 'piwikApi', '$location', '$timeout'];
 
-    function piwikReportingMenu($document, piwik, $filter, piwikApi, $location){
+    function piwikReportingMenu($document, piwik, $filter, piwikApi, $location, $timeout){
 
         return {
             restrict: 'A',
@@ -27,7 +27,49 @@
                 return function (scope, element, attrs, ngModel) {
                     scope.menu = {};
 
-                    scope.loadSubcategory = function (subcategory) {
+                    var timeoutPromise = null;
+                    scope.enterCategory = function (category) {
+                        if (timeoutPromise) {
+                            $timeout.cancel(timeoutPromise);
+                        }
+                        angular.forEach(scope.menu, function (cat) {
+                            cat.hover = false;
+                        });
+                        category.hover = true;
+                    };
+                    scope.leaveCategory = function (category) {
+
+                        if (timeoutPromise) {
+                            $timeout.cancel(timeoutPromise);
+                        }
+
+                        angular.forEach(scope.menu, function (cat) {
+                            if (!cat.active) {
+                                cat.hover = false;
+                            }
+                        });
+
+                        timeoutPromise = $timeout(function () {
+                            angular.forEach(scope.menu, function (cat) {
+                                if (cat.active) {
+                                    cat.hover = true;
+                                }
+                            });
+                        }, 2000);
+                    };
+
+                    scope.loadSubcategory = function (category, subcategory) {
+                        angular.forEach(scope.menu, function (cat) {
+                            cat.active = false;
+                            cat.hover = false;
+                            angular.forEach(cat.subcategories, function (subcat) {
+                                subcat.active = false;
+                            });
+                        });
+
+                        category.active = true;
+                        category.hover = true;
+                        subcategory.active = true;
 
                         var idSite = broadcast.getValueFromHash('idSite');
                         if (!idSite) {
@@ -50,6 +92,9 @@
                         $location.path(url);
                     };
 
+                    var url = $location.path();
+                    var activeCategory = piwik.broadcast.getParamValue('category', url);
+
                     piwikApi.bulkFetch([
                         {method: 'API.getPagesMetadata'},
                         {method: 'Dashboard.getDashboards'}
@@ -66,6 +111,11 @@
                             }
 
                             categoriesHandled[categoryId] = true;
+
+                            if (activeCategory && category.id === activeCategory) {
+                                category.active = true;
+                                category.hover  = true;
+                            }
 
                             category.subcategories = [];
 
@@ -90,6 +140,12 @@
 
                         angular.forEach(response[1], function (dashboard, key) {
                             var subcategory = dashboard.name;
+
+                            if (!activeCategory) {
+                                dashboards.active = true;
+                                dashboards.hover  = true;
+                            }
+
                             dashboard.order = key;
                             dashboard.html_url = 'module=Dashboard&action=embeddedIndex&idDashboard=' + dashboard.id;
 
@@ -100,9 +156,10 @@
                         scope.menu = $filter('orderBy')(menu, 'order');
 
                         if (!piwik.broadcast.isHashExists()) {
-                            scope.loadSubcategory(scope.menu[0].subcategories[0]);
+                            scope.loadSubcategory(scope.menu[0], scope.menu[0].subcategories[0]);
                         }
                     });
+
 
                 };
             }

@@ -31,8 +31,9 @@ class GetCountry extends Base
 
     public function configureWidgets(WidgetsList $widgetsList, ReportWidgetFactory $factory)
     {
-        $name   = Piwik::translate('UserCountry_WidgetLocation') . ' (' . Piwik::translate('UserCountry_Country') . ')';
-        $widget = $factory->createWidget()->setName($name);
+        // $name   = Piwik::translate('UserCountry_WidgetLocation') . ' (' . Piwik::translate('UserCountry_Country') . ')';
+        // $widget = $factory->createWidget()->setName($name);
+        $widget = $factory->createWidget();
         $widgetsList->addWidget($widget);
     }
 
