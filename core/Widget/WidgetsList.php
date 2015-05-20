@@ -13,7 +13,7 @@ use Piwik\Development;
 use Piwik\Piwik;
 use Piwik\Plugin\Report;
 use Piwik\Plugin\Widget;
-use Piwik\Plugin\Widgets;
+use Piwik\Plugin\Manager as PluginManager;
 use Piwik\Report\ReportWidgetFactory;
 
 /**
@@ -56,6 +56,7 @@ class WidgetsList
         $widgetId = $containerWidget->getId();
 
         $this->container[$widgetId] = $containerWidget;
+        $this->widgets[] = $containerWidget;
 
         // widgets were added to this container, but the container did not exist yet.
         if (isset($this->containerWidgets[$widgetId])) {
@@ -75,10 +76,6 @@ class WidgetsList
     {
         if (!Development::isEnabled()) {
             return;
-        }
-
-        if (!$widget->getName()) {
-            Development::error('No name is defined for added widget having method "' . $widget->getAction());
         }
 
         if (!$widget->getModule()) {
@@ -146,6 +143,15 @@ class WidgetsList
 
         $widgets = Widget::getAllWidgetConfigurations();
 
+        $widgetContainerConfigs = self::getAllWidgetContainerConfigClassNames();
+        foreach ($widgetContainerConfigs as $widgetClass) {
+            /** @var WidgetContainerConfig $widget */
+            $widget = new $widgetClass;
+            if ($widget->isEnabled()) {
+                $list->addContainer($widget);
+            }
+        }
+
         foreach ($widgets as $widget) {
             if ($widget->isEnabled()) {
                 $list->addWidget($widget);
@@ -164,4 +170,13 @@ class WidgetsList
 
         return $list;
     }
+
+    /**
+     * @return string[]
+     */
+    private static function getAllWidgetContainerConfigClassNames()
+    {
+        return PluginManager::getInstance()->findMultipleComponents('Widgets', 'Piwik\\Widget\\WidgetContainerConfig');
+    }
+
 }

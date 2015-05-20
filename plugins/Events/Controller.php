@@ -16,28 +16,6 @@ use Piwik\View;
  */
 class Controller extends \Piwik\Plugin\Controller
 {
-    public function index()
-    {
-        $view = new View('@Events/index');
-        $view->leftMenuReports = $this->getLeftMenuReports();
-        return $view->render();
-    }
-
-    private function getLeftMenuReports()
-    {
-        $reports = new View\ReportsByDimension('Events');
-        foreach(Events::getLabelTranslations() as $apiAction => $translations) {
-            // 'getCategory' is the API method, but we are loading 'indexCategory' which displays <h2>
-            $count = 1;
-            $controllerAction = str_replace("get", "index", $apiAction, $count);
-            $params = array(
-                'secondaryDimension' => API::getInstance()->getDefaultSecondaryDimension($apiAction)
-            );
-            $reports->addReport('Events_TopEvents', $translations[0], 'Events.' . $controllerAction, $params);
-        }
-        return $reports->render();
-    }
-
     public function indexCategory()
     {
         return $this->indexEvent(__FUNCTION__);

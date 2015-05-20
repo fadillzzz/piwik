@@ -16,5 +16,5 @@ use Piwik\Plugin\Category;
 class EcommerceCategory extends Category
 {
     protected $name = 'Goals_Ecommerce';
-    protected $order = 9;
+    protected $order = 25;
 }

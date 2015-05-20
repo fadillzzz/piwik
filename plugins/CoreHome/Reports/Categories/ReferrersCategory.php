@@ -13,5 +13,5 @@ use Piwik\Plugin\Category;
 class ReferrersCategory extends Category
 {
     protected $name = 'Referrers_Referrers';
-    protected $order = 7;
+    protected $order = 15;
 }

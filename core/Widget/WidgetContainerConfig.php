@@ -21,9 +21,9 @@ class WidgetContainerConfig extends WidgetConfig
     /**
      * @var WidgetConfig[]
      */
-    private $widgets;
-    private $layout = '';
-    private $id;
+    protected $widgets;
+    protected $layout = '';
+    protected $id;
 
     public function getId()
     {
@@ -46,9 +46,9 @@ class WidgetContainerConfig extends WidgetConfig
         $this->layout = $layout;
     }
 
-    public function addWidget(WidgetConfig $reportView)
+    public function addWidget(WidgetConfig $widget)
     {
-        $this->widgets[] = $reportView;
+        $this->widgets[] = $widget;
 
         return $this;
     }

@@ -24,10 +24,4 @@ class Menu extends \Piwik\Plugin\Menu
                                      $order = 40);
         }
     }
-
-    public function configureReportingMenu(MenuReporting $menu)
-    {
-        $menu->addVisitorsItem('DevicesDetection_Devices', $this->urlForAction('devices'));
-        $menu->addVisitorsItem('DevicesDetection_Software', $this->urlForAction('software'));
-    }
 }

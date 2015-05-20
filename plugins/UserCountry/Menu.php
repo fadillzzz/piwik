@@ -22,9 +22,4 @@ class Menu extends \Piwik\Plugin\Menu
                                    $order = 9);
         }
     }
-
-    public function configureReportingMenu(MenuReporting $menu)
-    {
-        $menu->addVisitorsItem('UserCountry_SubmenuLocations', $this->urlForAction('index'));
-    }
 }

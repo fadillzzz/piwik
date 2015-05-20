@@ -55,7 +55,6 @@ widgetsHelper.getAvailableWidgets = function () {
                 $.each(subwidgets, function (index, widget) {
                     moved[categoryToUse].push(widget);
                 });
-
             });
         });
 

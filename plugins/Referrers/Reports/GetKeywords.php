@@ -13,9 +13,7 @@ use Piwik\Plugin\ViewDataTable;
 use Piwik\Plugins\CoreVisualizations\Visualizations\HtmlTable;
 use Piwik\Plugins\CoreVisualizations\Visualizations\JqplotGraph\Evolution;
 use Piwik\Plugins\Referrers\Columns\Keyword;
-use Piwik\Report\ReportWidgetFactory;
 use Piwik\Tracker\Visit;
-use Piwik\Widget\WidgetsList;
 
 class GetKeywords extends Base
 {

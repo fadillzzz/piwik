@@ -47,7 +47,7 @@ class GetReferrerType extends Base
     {
         $widgetsList->addWidget(
             $factory->createWidget()
-                    ->setName('General_Overview')
+                    ->setName('Referrers_ReferrerTypes')
                     ->setSubCategory('Referrers_WidgetGetAll')
         );
 

@@ -13,5 +13,5 @@ use Piwik\Plugin\Category;
 class GoalsCategory extends Category
 {
     protected $name = 'Goals_Goals';
-    protected $order = 8;
+    protected $order = 20;
 }

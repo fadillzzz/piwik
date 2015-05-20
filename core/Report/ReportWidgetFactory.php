@@ -9,6 +9,7 @@
 namespace Piwik\Report;
 
 use Piwik\Plugin\Report;
+use Piwik\Widget\WidgetContainerConfig;
 
 /**
  * Singleton that manages user access to Piwik resources.
@@ -46,6 +47,22 @@ class ReportWidgetFactory
     private function setReport($report)
     {
         $this->report = $report;
+    }
+
+    public function createContainerWidget($containerId)
+    {
+        $widget = new WidgetContainerConfig();
+        $widget->setCategory($this->report->getCategory());
+        $widget->setId($containerId);
+
+        if ($this->report->getSubCategory()) {
+            $widget->setSubCategory($this->report->getSubCategory());
+        }
+
+        $orderThatListsReportsAtTheEndOfEachCategory = 100 + $this->report->getOrder();
+        $widget->setOrder($orderThatListsReportsAtTheEndOfEachCategory);
+
+        return $widget;
     }
 
     public function createWidget()

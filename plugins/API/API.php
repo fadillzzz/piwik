@@ -379,34 +379,68 @@ class API extends \Piwik\Plugin\API
 
         $categories = $this->moveWidgetsIntoCategories($list->getWidgets());
 
-        foreach ($list->getWidgets() as $widget) {
+        foreach ($list->getWidgets() as $widgetConfig) {
 
-            $category   = null;
-            $subcategory = null;
-            if (isset($categories[$widget->getCategory()])) {
-                $category    = $categories[$widget->getCategory()];
-                $subcategory = $category->getSubCategory($widget->getSubCategory());
-                $category    = $this->buildCategoryMetadata($category);
-
-                if ($subcategory) {
-                    $subcategory = $this->buildSubCategoryMetadata($subcategory);
-                }
+            if ($widgetConfig instanceof WidgetContainerConfig) {
+                $widgets = $widgetConfig->getWidgetConfigs();
+            } else {
+                $widgets = array($widgetConfig);
             }
 
-            $item = array(
-                'name'        => Piwik::translate($widget->getName()),
-                'category'    => $category,
-                'subcategory' => $subcategory,
-                'uniqueId'    => $widget->getUniqueId(),
-                'order'       => $widget->getOrder(),
-                'parameters'  => array('module' => $widget->getModule(),
-                        'action' => $widget->getAction()
-                    ) + $widget->getParameters()
-            );
-            $flat[] = $item;
+            foreach ($widgets as $widget) {
+                if (!$widget->getName()) {
+                    continue;
+                }
+                $category   = null;
+                $subcategory = null;
+                if (isset($categories[$widget->getCategory()])) {
+                    $category    = $categories[$widget->getCategory()];
+                    $subcategory = $category->getSubCategory($widget->getSubCategory());
+                    $category    = $this->buildCategoryMetadata($category);
+
+                    if ($subcategory) {
+                        $subcategory = $this->buildSubCategoryMetadata($subcategory);
+                    }
+                }
+
+                $item = array(
+                    'name'        => Piwik::translate($widget->getName()),
+                    'category'    => $category,
+                    'subcategory' => $subcategory,
+                    'uniqueId'    => $widget->getUniqueId(),
+                    'order'       => $widget->getOrder(),
+                    'parameters'  => $this->buildWidgetParameters($widget)
+                );
+                $flat[] = $item;
+            }
         }
 
+        usort($flat, function ($widgetA, $widgetB) {
+            if ($widgetA['category']['order'] === $widgetB['category']['order']) {
+                if (!empty($widgetA['subcategory']['order']) && !empty($widgetB['category']['order'])) {
+                    if ($widgetA['subcategory']['order'] === $widgetB['subcategory']['order']) {
+                        return 0;
+                    }
+                    return $widgetA['subcategory']['order'] > $widgetB['subcategory']['order'] ? 1 : -1;
+                } elseif (!empty($widgetA['category']['order'])) {
+                    return 1;
+                }
+
+                return -1;
+            }
+
+            return $widgetA['category']['order'] > $widgetB['category']['order'] ? 1 : -1;
+        });
+
         return $flat;
+    }
+
+    private function buildWidgetParameters(WidgetConfig $widget)
+    {
+        // todo this should be actually done in WidgetConfig
+        return array('module' => $widget->getModule(),
+            'action' => $widget->getAction()
+        ) + $widget->getParameters();
     }
 
     private function buildCategoryMetadata(Category $category)
@@ -547,8 +581,8 @@ class API extends \Piwik\Plugin\API
                         'order' => $widget->getOrder(),
                         'module' => $widget->getModule(),
                         'action' => $widget->getAction(),
-                        'parameters' => $widget->getParameters(),
-                        'widget_url' => '?' . http_build_query($widget->getParameters()),
+                        'parameters' => $this->buildWidgetParameters($widget),
+                        'widget_url' => '?' . http_build_query($this->buildWidgetParameters($widget)),
                         'processed_url' => '?' . http_build_query(array(
                                 'module' => 'API',
                                 'method' => 'API.getProcessedReport',
@@ -572,12 +606,14 @@ class API extends \Piwik\Plugin\API
                         foreach ($widget->getWidgetConfigs() as $widgetConfig) {
                             $child = array(
                                 'name' => Piwik::translate($widgetConfig->getName()),
+                                'category' => $this->buildCategoryMetadata($category),
+                                'subcategory' => $this->buildSubCategoryMetadata($subcategory),
                                 'module' => $widgetConfig->getModule(),
                                 'action' => $widgetConfig->getAction(),
-                                'parameters' => $widgetConfig->getParameters(),
+                                'parameters' => $this->buildWidgetParameters($widgetConfig),
                                 'viewDataTable' => $widgetConfig->getDefaultView(),
                                 'order' => $widgetConfig->getOrder(),
-                                'widget_url' => '?' . http_build_query($widgetConfig->getParameters()),
+                                'widget_url' => '?' . http_build_query($this->buildWidgetParameters($widgetConfig)),
                                 'processed_url' => '?' . http_build_query(array(
                                         'module' => 'API',
                                         'method' => 'API.getProcessedReport',
@@ -587,7 +623,7 @@ class API extends \Piwik\Plugin\API
                             );
                             $children[] = $child;
                         }
-                        $config['children'] = $children;
+                        $config['widgets'] = $children;
                     }
 
                     $ca['widgets'][] = $config;

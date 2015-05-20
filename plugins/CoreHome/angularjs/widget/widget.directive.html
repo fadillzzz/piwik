@@ -2,9 +2,10 @@
     <h2 ng-if="widget.name" piwik-enriched-headline>{{ widget.name }}</h2>
     <div ng-if="!widget.isContainer" ng-include="widget.html_url"></div>
 
-    <!-- we need to respect widget.layout eg for ByDimensionView -->
-    <div ng-if="widget.isContainer" ng-repeat="child in widget.children"
-         piwik-widget-container="child"
-         layout="widget.layout"
-         widget="child"></div>
+    <div ng-if="widget.isContainer && widget.layout!='ByDimension'">
+        <div piwik-widget-container container="widget"></div>
+    </div>
+    <div ng-if="widget.isContainer && widget.layout=='ByDimension'">
+        <div piwik-widget-by-dimension-container container="widget"></div>
+    </div>
 </div>

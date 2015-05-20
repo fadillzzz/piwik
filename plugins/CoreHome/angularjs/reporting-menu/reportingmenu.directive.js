@@ -27,7 +27,7 @@
                 return function (scope, element, attrs, ngModel) {
                     scope.menu = {};
 
-                    scope.loadSubcategory = function (category) {
+                    scope.loadSubcategory = function (subcategory) {
 
                         var idSite = broadcast.getValueFromHash('idSite');
                         if (!idSite) {
@@ -43,10 +43,9 @@
                         }
 
                         var url = 'idSite=' + idSite + '&period=' + period + '&date=' + date + '&';
-
                         var rand = parseInt(Math.random()* 100000, 10);
                         url += 'random=' + rand+ '&';
-                        url += category.html_url;
+                        url += subcategory.html_url;
 
                         $location.path(url);
                     };
@@ -99,6 +98,10 @@
                         menu.push(dashboards);
 
                         scope.menu = $filter('orderBy')(menu, 'order');
+
+                        if (!piwik.broadcast.isHashExists()) {
+                            scope.loadSubcategory(scope.menu[0].subcategories[0]);
+                        }
                     });
 
                 };

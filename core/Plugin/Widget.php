@@ -10,9 +10,9 @@ namespace Piwik\Plugin;
 
 use Piwik\Container\StaticContainer;
 use Piwik\Plugin\Manager as PluginManager;
-use Piwik\Widget\WidgetsList;
 use Exception;
 use Piwik\Widget\WidgetConfig;
+use Piwik\Widget\WidgetContainerConfig;
 
 /**
  * Defines a new widget. You can create a new widget using the console command `./console generate:widget`.

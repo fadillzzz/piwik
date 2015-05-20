@@ -12,6 +12,7 @@ use Piwik\Piwik;
 use Piwik\Plugin\ViewDataTable;
 use Piwik\Plugins\UserCountry\Columns\Continent;
 use Piwik\Report\ReportWidgetFactory;
+use Piwik\Widget\WidgetContainerConfig;
 use Piwik\Widget\WidgetsList;
 
 class GetContinent extends Base
@@ -31,9 +32,14 @@ class GetContinent extends Base
 
     public function configureWidgets(WidgetsList $widgetsList, ReportWidgetFactory $factory)
     {
+        $widgetsList->addContainer($factory->createContainerWidget('Continent'));
+
         $name   = Piwik::translate('UserCountry_WidgetLocation') . ' (' . Piwik::translate('UserCountry_Continent') . ')';
         $widget = $factory->createWidget()->setName($name);
-        $widgetsList->addWidget($widget);
+        $widgetsList->addToContainerWidget('Continent', $widget);
+
+        $widget = $factory->createWidget()->setAction('getDistinctCountries')->setName('');
+        $widgetsList->addToContainerWidget('Continent', $widget);
     }
 
     public function configureView(ViewDataTable $view)

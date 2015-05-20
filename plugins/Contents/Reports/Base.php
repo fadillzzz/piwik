@@ -8,12 +8,13 @@
  */
 namespace Piwik\Plugins\Contents\Reports;
 
-use Piwik\Columns\Dimension;
 use Piwik\Common;
 use Piwik\Piwik;
 use Piwik\Plugin\Report;
 use Piwik\Plugin\ViewDataTable;
 use Piwik\Plugins\Contents\Dimensions;
+use Piwik\Report\ReportWidgetFactory;
+use Piwik\Widget\WidgetsList;
 
 abstract class Base extends Report
 {
@@ -21,6 +22,13 @@ abstract class Base extends Report
     {
         $this->category = 'General_Actions';
         $this->subCategory = 'Contents_Contents';
+    }
+
+    public function configureWidgets(WidgetsList $widgetsList, ReportWidgetFactory $factory)
+    {
+        $widget = $factory->createWidget();
+
+        $widgetsList->addToContainerWidget('Contents', $widget);
     }
 
     /**

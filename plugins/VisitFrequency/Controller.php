@@ -28,17 +28,6 @@ class Controller extends \Piwik\Plugin\Controller
         parent::__construct();
     }
 
-    public function index()
-    {
-        $view = new View('@VisitFrequency/index');
-        $this->setGeneralVariablesView($view);
-
-        $view->graphEvolutionVisitFrequency = $this->getEvolutionGraph(array(), array('nb_visits_returning'));
-        $this->setSparklinesAndNumbers($view);
-
-        return $view->render();
-    }
-
     public function getSparklines()
     {
         $view = new View('@VisitFrequency/getSparklines');

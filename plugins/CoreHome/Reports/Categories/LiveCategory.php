@@ -10,8 +10,8 @@ namespace Piwik\Plugins\CoreHome\Reports\Categories;
 
 use Piwik\Plugin\Category;
 
-class ActionsCategory extends Category
+class LiveCategory extends Category
 {
-    protected $name = 'General_Actions';
-    protected $order = 10;
+    protected $name = 'Live!';
+    protected $order = 2;
 }

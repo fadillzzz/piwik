@@ -12,7 +12,10 @@ use Piwik\Piwik;
 use Piwik\Plugins\CoreHome\Columns\Metrics\ActionsPerVisit;
 use Piwik\Plugins\CoreHome\Columns\Metrics\AverageTimeOnSite;
 use Piwik\Plugins\CoreHome\Columns\Metrics\BounceRate;
+use Piwik\Plugins\CoreVisualizations\Visualizations\JqplotGraph\Evolution;
 use Piwik\Plugins\VisitFrequency\Columns\Metrics\ReturningMetric;
+use Piwik\Report\ReportWidgetFactory;
+use Piwik\Widget\WidgetsList;
 
 class Get extends \Piwik\Plugin\Report
 {
@@ -36,4 +39,25 @@ class Get extends \Piwik\Plugin\Report
         );
         $this->order = 40;
     }
+
+    public function configureWidgets(WidgetsList $widgetsList, ReportWidgetFactory $factory)
+    {
+        $widgetsList->addWidget(
+            $factory->createWidget()
+                ->setName('VisitFrequency_WidgetGraphReturning')
+                ->setSubCategory('VisitorInterest_Engagement')
+                ->forceViewDataTable(Evolution::ID)
+                ->setAction('getEvolutionGraph')
+                ->setOrder(1)
+                ->addParameters(array('columns' => array('nb_visits_returning')))
+        );
+
+        $widgetsList->addWidget(
+            $factory->createCustomWidget('getSparklines')
+                ->setName('')
+                ->setSubCategory('VisitorInterest_Engagement')
+                ->setOrder(2)
+        );
+    }
+
 }

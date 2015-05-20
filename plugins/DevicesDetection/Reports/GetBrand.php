@@ -20,7 +20,7 @@ class GetBrand extends Base
         $this->dimension     = new DeviceBrand();
         $this->name          = Piwik::translate('DevicesDetection_DeviceBrand');
         $this->documentation = ''; // TODO
-        $this->order = 1;
+        $this->order = 4;
 
         $this->subCategory = 'DevicesDetection_Devices';
     }

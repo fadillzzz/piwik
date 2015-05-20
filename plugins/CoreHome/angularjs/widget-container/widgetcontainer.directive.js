@@ -7,20 +7,20 @@
 
 /**
  * Example:
- * <div piwik-widget widget="widget"></div>
+ * <div piwik-widget-container container="widget"></div>
  */
 (function () {
-    angular.module('piwikApp').directive('piwikWidget', piwikWidget);
+    angular.module('piwikApp').directive('piwikWidgetContainer', piwikWidgetContainer);
 
-    piwikWidget.$inject = ['piwik', '$location'];
+    piwikWidgetContainer.$inject = ['piwik', '$location'];
 
-    function piwikWidget(piwik, $location){
+    function piwikWidgetContainer(piwik, $location){
         return {
             restrict: 'A',
             scope: {
-                widget: '='
+                container: '='
             },
-            templateUrl: 'plugins/CoreHome/angularjs/widget/widget.directive.html?cb=' + piwik.cacheBuster,
+            templateUrl: 'plugins/CoreHome/angularjs/widget-container/widgetcontainer.directive.html?cb=' + piwik.cacheBuster,
             compile: function (element, attrs) {
 
                 return function (scope, element, attrs, ngModel) {
@@ -40,10 +40,9 @@
                         return '?' + currentHashStr.substr(1);
                     }
 
-                    if (!scope.widget.isContainer) {
-                        // we want to render only if it is not a container
-                        scope.widget.html_url = getFullWidgetUrl(scope.widget);
-                    }
+                    angular.forEach(scope.container.widgets, function (widget) {
+                        widget.html_url = getFullWidgetUrl(widget);
+                    });
                 };
             }
         };

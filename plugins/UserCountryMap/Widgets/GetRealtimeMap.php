@@ -9,6 +9,7 @@
 namespace Piwik\Plugins\UserCountryMap\Widgets;
 
 use Piwik\Widget\WidgetConfig;
+use Piwik\Plugin\Manager as PluginManager;
 
 class GetRealtimeMap extends \Piwik\Plugin\Widget
 {
@@ -20,5 +21,9 @@ class GetRealtimeMap extends \Piwik\Plugin\Widget
         $config->setModule('UserCountryMap');
         $config->setAction('realtimeMap');
         $config->setOrder(5);
+
+        if (!PluginManager::getInstance()->isPluginActivated('UserCountry')) {
+            $config->disable();
+        }
     }
 }
