@@ -61,6 +61,10 @@ class Sparklines extends ViewDataTable
 
         $sparklines = array();
         foreach ($columns as $column) {
+            if ($column === 'label') {
+                continue;
+            }
+
             $blankSparkline = array('url' => '', 'metrics' => array());
 
             if (empty($column)) {
