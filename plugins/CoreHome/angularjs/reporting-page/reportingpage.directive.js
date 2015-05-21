@@ -23,6 +23,7 @@
             compile: function (element, attrs) {
 
                 return function (scope, element, attrs, ngModel) {
+
                     function resetPage(scope)
                     {
                         scope.widgets = [];
@@ -32,6 +33,45 @@
                     }
 
                     resetPage(scope);
+
+                    var reportMetadata = [];
+                    var reportMetadataPromise = piwikApi.fetch({
+                        method: 'API.getReportMetadata',
+                        idSites: piwik.idSite || piwik.broadcast.getValueFromUrl('idSite'),
+                    }).then(function (response) {
+                        reportMetadata = response;
+                    });
+
+                    function getRelatedReports(widget)
+                    {
+                        var found = [];
+
+                        if (widget.isReport) {
+                            angular.forEach(reportMetadata, function (report) {
+                                if (report.relatedReports && report.module === widget.module && report.action === widget.action) {
+                                    found = report.relatedReports;
+                                }
+                            });
+                        }
+
+                        return found;
+                    }
+
+                    function isIgnoredReport(reportsToIgonre, widget)
+                    {
+                        var found = false;
+
+                        if (widget.isReport) {
+                            angular.forEach(reportsToIgonre, function (report) {
+                                if (report.module === widget.module &&
+                                    report.action === widget.action) {
+                                    found = true;
+                                }
+                            });
+                        }
+
+                        return found;
+                    }
 
                     scope.renderPage = function (init) {
                         resetPage(scope);
@@ -66,46 +106,74 @@
                             categoryId: category,
                             subcategoryId: subcategory
                         }).then(function (response) {
-                            var widgets = [];
-                            angular.forEach(response.widgets, function (widget) {
-                                if (widget.viewDataTable && widget.viewDataTable === 'graphEvolution') {
-                                    scope.evolutionReports.push(widget);
-                                } else if (widget.viewDataTable && widget.viewDataTable === 'sparklines') {
-                                    scope.sparklineReports.push(widget);
-                                } else {
-                                    widgets.push(widget);
-                                }
-                            });
 
-                            widgets = $filter('orderBy')(widgets, 'order');
+                            // here we make sure both API requests are done, we should do this later in routers!
+                            reportMetadataPromise.then(function () {
 
-                            var groupedWidgets = [];
 
-                            if (widgets.length === 1) {
-                                // if there is only one widget, we always display it full width
-                                groupedWidgets = widgets;
-                            } else {
-                                for (var i = 0; i < widgets.length; i++) {
-                                    var widget = widgets[i];
 
-                                    if (widget.isContainer && widget.layout && widget.layout === 'ByDimension') {
-                                        widget.widgets = $filter('orderBy')(widget.widgets, 'order');
+                                var widgets = [];
 
-                                        groupedWidgets.push(widget);
+                                var reportsToIgnore = [];
+
+                                angular.forEach(response.widgets, function (widget) {
+
+                                    if (isIgnoredReport(reportsToIgnore, widget)) {
+                                        return;
+                                    }
+
+                                    reportsToIgnore = reportsToIgnore.concat(getRelatedReports(widget));
+
+                                    if (widget.viewDataTable && widget.viewDataTable === 'graphEvolution') {
+                                        scope.evolutionReports.push(widget);
+                                    } else if (widget.viewDataTable && widget.viewDataTable === 'sparklines') {
+                                        scope.sparklineReports.push(widget);
                                     } else {
-                                        var group = [widget];
-                                        // we move widgets into groups of 2 (the last one before a container can only contain 1)
-                                        if (widgets[i+1] && (!widgets[i+1].isContainer || widget.layout !== 'ByDimension')) {
-                                            i++;
-                                            group.push(widgets[i]);
-                                        }
+                                        widgets.push(widget);
+                                    }
+                                });
 
-                                        groupedWidgets.push({group: group});
+                                widgets = $filter('orderBy')(widgets, 'order');
+
+                                function shouldBeRenderedWithFullWidth(widget)
+                                {
+                                    if (widget.isContainer && widget.layout && widget.layout === 'ByDimension') {
+                                        return true;
+                                    }
+
+                                    return widget.viewDataTable && widget.viewDataTable === 'tableAllColumns';
+                                }
+
+                                var groupedWidgets = [];
+
+                                if (widgets.length === 1) {
+                                    // if there is only one widget, we always display it full width
+                                    groupedWidgets = widgets;
+                                } else {
+                                    for (var i = 0; i < widgets.length; i++) {
+                                        var widget = widgets[i];
+
+                                        if (shouldBeRenderedWithFullWidth(widget)) {
+                                            widget.widgets = $filter('orderBy')(widget.widgets, 'order');
+
+                                            groupedWidgets.push(widget);
+                                        } else {
+                                            var group = [widget];
+                                            // we move widgets into groups of 2 (the last one before a container can only contain 1)
+                                            if (widgets[i+1] && !shouldBeRenderedWithFullWidth(widgets[i+1])) {
+                                                i++;
+                                                group.push(widgets[i]);
+                                            }
+
+                                            groupedWidgets.push({group: group});
+                                        }
                                     }
                                 }
-                            }
 
-                            scope.widgets = groupedWidgets;
+                                scope.widgets = groupedWidgets;
+
+
+                            });
                         });
                     }
 

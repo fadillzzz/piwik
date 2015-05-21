@@ -71,6 +71,10 @@ class ReportWidgetFactory
         $widget->setName($this->report->getName());
         $widget->setCategory($this->report->getCategory());
 
+        if ($this->report->getDefaultTypeViewDataTable()) {
+            $widget->setDefaultView($this->report->getDefaultTypeViewDataTable());
+        }
+
         if ($this->report->getSubCategory()) {
             $widget->setSubCategory($this->report->getSubCategory());
         }
@@ -92,6 +96,7 @@ class ReportWidgetFactory
     public function createCustomWidget($action)
     {
         $widget = $this->createWidget();
+        $widget->setDefaultView(null);
         $widget->setAction($action);
 
         return $widget;

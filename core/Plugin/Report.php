@@ -557,12 +557,13 @@ class Report
         if (!empty($relatedReports)) {
             $report['relatedReports'] = array();
             foreach ($relatedReports as $relatedReport) {
-                $report['relatedReports'][] = array(
-                    'name' => $relatedReport->getName(),
-                    'module' => $relatedReport->getModule(),
-                    'action' => $relatedReport->getAction()
-                );
-
+                if (!empty($relatedReport)) {
+                    $report['relatedReports'][] = array(
+                        'name' => $relatedReport->getName(),
+                        'module' => $relatedReport->getModule(),
+                        'action' => $relatedReport->getAction()
+                    );
+                }
             }
         }
 

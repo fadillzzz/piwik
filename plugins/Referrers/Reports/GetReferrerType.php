@@ -65,15 +65,8 @@ class GetReferrerType extends Base
         );
 
         $widgetsList->addWidget(
-            $factory->createWidget()
-                ->forceViewDataTable(Sparklines::ID)
-                ->setName('Referrers_Type')
-                ->setSubCategory('General_Overview')
-                ->setOrder(10)
-        );
-
-        $widgetsList->addWidget(
             $factory->createCustomWidget('getSparklines')
+                ->forceViewDataTable(Sparklines::ID)
                 ->setName('Referrers_Type')
                 ->setSubCategory('General_Overview')
                 ->setOrder(10)
