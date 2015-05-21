@@ -71,6 +71,10 @@
                         category.hover = true;
                         subcategory.active = true;
 
+                        // TODO this is a hack to make the dashboard widget go away, need to handle this in a route or so
+                        $('.top_controls .dashboard-manager').hide();
+                        $('#dashboardWidgetsArea').dashboard('destroy');
+
                         var idSite = broadcast.getValueFromHash('idSite');
                         if (!idSite) {
                             idSite = broadcast.getValueFromUrl('idSite');
