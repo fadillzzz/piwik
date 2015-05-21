@@ -93,7 +93,7 @@ class Widget
     }
 
     /**
-     * @return Widgets|null
+     * @return Widget|null
      * @throws \Exception
      */
     public static function factory($module, $action)

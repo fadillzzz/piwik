@@ -16,5 +16,4 @@ class ProductsByDimension extends WidgetContainerConfig
     protected $id = 'Products';
     protected $category = 'Goals_Ecommerce';
     protected $subCategory = 'Goals_Products';
-    protected $name = 'Goals_Products';
 }

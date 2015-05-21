@@ -23,7 +23,6 @@ use Piwik\Report\ReportWidgetFactory;
  * event. Observers for this event should call the {@link add()} method to add reports.
  *
  * @api
- * @method static \Piwik\WidgetsList getInstance()
  */
 class WidgetsList
 {
@@ -169,6 +168,30 @@ class WidgetsList
         Piwik::postEvent('Widgets.filterWidgets', array($list));
 
         return $list;
+    }
+
+    /**
+     * Returns the unique id of an widget with the given parameters
+     *
+     * @param $controllerName
+     * @param $controllerAction
+     * @param array $customParameters
+     * @return string
+     */
+    public static function getWidgetUniqueId($controllerName, $controllerAction, $customParameters = array())
+    {
+        $widgetUniqueId = 'widget' . $controllerName . $controllerAction;
+
+        foreach ($customParameters as $name => $value) {
+            if (is_array($value)) {
+                // use 'Array' for backward compatibility;
+                // could we switch to using $value[0]?
+                $value = 'Array';
+            }
+            $widgetUniqueId .= $name . $value;
+        }
+
+        return $widgetUniqueId;
     }
 
     /**

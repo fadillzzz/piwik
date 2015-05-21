@@ -9,10 +9,9 @@
 
 namespace Piwik\Plugins\CoreConsole\Commands;
 
-use Piwik\Filesystem;
 use Piwik\Piwik;
-use Piwik\Plugin\Widgets;
 use Piwik\Translate;
+use Piwik\Widget\WidgetsList;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -112,7 +111,7 @@ class GenerateWidget extends GeneratePluginBase
     protected function getExistingCategories()
     {
         $categories = array();
-        foreach (Widgets::getAllWidgets() as $widget) {
+        foreach (WidgetsList::get()->getWidgets() as $widget) {
             if ($widget->getCategory()) {
                 $categories[] = Piwik::translate($widget->getCategory());
             }

@@ -83,6 +83,7 @@ class Get extends Base
                 $config->forceViewDataTable(Sparklines::ID);
                 $config->setParameters($params);
                 $config->setOrder(++$orderId);
+                $config->setIsNotStandaloneWidget();
                 $config->addParameters(array('allow_multiple' => (int) $goal['allow_multiple']));
                 $widgetsList->addWidget($config);
 

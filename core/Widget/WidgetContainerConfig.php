@@ -60,4 +60,10 @@ class WidgetContainerConfig extends WidgetConfig
     {
         return $this->widgets;
     }
+
+    public function isStandaloneWidget()
+    {
+        return false;
+    }
+
 }

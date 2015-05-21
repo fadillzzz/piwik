@@ -381,13 +381,17 @@ class API extends \Piwik\Plugin\API
 
         foreach ($list->getWidgets() as $widgetConfig) {
 
+            $widgets = array($widgetConfig);
             if ($widgetConfig instanceof WidgetContainerConfig) {
-                $widgets = $widgetConfig->getWidgetConfigs();
-            } else {
-                $widgets = array($widgetConfig);
+                $widgets = array_merge($widgets, $widgetConfig->getWidgetConfigs());
             }
 
             foreach ($widgets as $widget) {
+
+                if (!$widget->isStandaloneWidget()) {
+                    continue;
+                }
+
                 if (!$widget->getName()) {
                     continue;
                 }

@@ -27,6 +27,7 @@ class WidgetConfig
     protected $name   = '';
     protected $order  = 99;
     protected $isEnabled = true;
+    protected $isStandaloneWidget = true;
 
     public function getCategory()
     {
@@ -217,20 +218,19 @@ class WidgetConfig
      */
     public function getUniqueId()
     {
-        $widgetUniqueId = 'widget' . $this->getModule() . $this->getAction();
-
-        foreach ($this->getParameters() as $name => $value) {
-            if (is_array($value)) {
-                // use 'Array' for backward compatibility;
-                // could we switch to using $value[0]?
-                $value = 'Array';
-            }
-            $widgetUniqueId .= $name . $value;
-        }
-
-        return $widgetUniqueId;
+        return WidgetsList::getWidgetUniqueId($this->getModule(), $this->getAction(), $this->getParameters());
     }
 
+    public function setIsNotStandaloneWidget()
+    {
+        $this->isStandaloneWidget = false;
+        return $this;
+    }
+
+    public function isStandaloneWidget()
+    {
+        return $this->isStandaloneWidget;
+    }
 
 
 }

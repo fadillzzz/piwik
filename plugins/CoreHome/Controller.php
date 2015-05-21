@@ -30,7 +30,6 @@ use Piwik\UpdateCheck;
 use Piwik\Url;
 use Piwik\View;
 use Piwik\ViewDataTable\Manager as ViewDataTableManager;
-use Piwik\Plugin\Widgets as PluginWidgets;
 
 class Controller extends \Piwik\Plugin\Controller
 {
