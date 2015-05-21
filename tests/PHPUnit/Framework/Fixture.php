@@ -83,7 +83,12 @@ class Fixture extends \PHPUnit_Framework_Assert
     const ADMIN_USER_PASSWORD = 'superUserPass';
 
     public $dbName = false;
+
+    /**
+     * @deprecated has no effect now.
+     */
     public $createConfig = true;
+
     public $dropDatabaseInSetUp = true;
     public $dropDatabaseInTearDown = true;
     public $loadTranslations = true;
@@ -150,16 +155,8 @@ class Fixture extends \PHPUnit_Framework_Assert
 
     public function performSetUp($setupEnvironmentOnly = false)
     {
-        if ($this->createConfig) {
-            GlobalSettingsProvider::unsetSingletonInstance();
-        }
-
         $this->piwikEnvironment = new Environment('test');
         $this->piwikEnvironment->init();
-
-        if ($this->createConfig) {
-            Config::setSingletonInstance(new TestConfig());
-        }
 
         try {
             $this->dbName = $this->getDbName();
@@ -330,9 +327,6 @@ class Fixture extends \PHPUnit_Framework_Assert
 
         $_GET = $_REQUEST = array();
         Translate::reset();
-
-        GlobalSettingsProvider::unsetSingletonInstance();
-        Config::setSingletonInstance(new TestConfig());
 
         Config::getInstance()->Plugins; // make sure Plugins exists in a config object for next tests that use Plugin\Manager
         // since Plugin\Manager uses getFromGlobalConfig which doesn't init the config object

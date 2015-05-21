@@ -1,15 +1,15 @@
 <?php
 
+use Piwik\Application\Environment;
 use Piwik\Common;
 use Piwik\Config;
-use Piwik\Config\IniFileChain;
 use Piwik\Container\StaticContainer;
 use Piwik\Piwik;
 use Piwik\Option;
 use Piwik\Plugin\Manager as PluginManager;
 use Piwik\DbHelper;
 use Piwik\Tests\Framework\Fixture;
-use Piwik\Tests\Framework\Mock\TestConfig;
+use Piwik\Tests\Framework\TestingEnvironment\MakeGlobalSettingsWithFile;
 
 require_once PIWIK_INCLUDE_PATH . "/core/Config.php";
 
@@ -151,12 +151,6 @@ class Piwik_TestingEnvironment
             \Piwik\Profiler::setupProfilerXHProf($mainRun = false, $setupDuringTracking = true);
         }
 
-        \Piwik\Application\Kernel\GlobalSettingsProvider::getSingletonInstance(
-            $testingEnvironment->configFileGlobal,
-            $testingEnvironment->configFileLocal,
-            $testingEnvironment->configFileCommon
-        );
-
         // Apply DI config from the fixture
         $diConfig = array();
         if ($testingEnvironment->fixtureClass) {
@@ -178,6 +172,12 @@ class Piwik_TestingEnvironment
             }
         }
 
+        Environment::addEnvironmentManipulator(new MakeGlobalSettingsWithFile($testingEnvironment));
+
+        if (!$testingEnvironment->dontUseTestConfig) {
+            $diConfig['Piwik\Config'] = \DI\object('Piwik\Tests\Framework\Mock\TestConfig');
+        }
+
         if (!empty($diConfig)) {
             StaticContainer::addDefinitions($diConfig);
         }
@@ -191,17 +191,6 @@ class Piwik_TestingEnvironment
             }
         });
 
-        if (!$testingEnvironment->dontUseTestConfig) {
-            Config::setSingletonInstance(new TestConfig(
-                $testingEnvironment->configFileGlobal, $testingEnvironment->configFileLocal, $testingEnvironment->configFileCommon
-            ));
-        } else {
-            \Piwik\Application\Kernel\GlobalSettingsProvider::unsetSingletonInstance();
-            
-            Config::setSingletonInstance(new Config(
-                $testingEnvironment->configFileGlobal, $testingEnvironment->configFileLocal, $testingEnvironment->configFileCommon
-            ));
-        }
         Piwik::addAction('Request.dispatch', function() use ($testingEnvironment) {
             if (empty($_GET['ignoreClearAllViewDataTableParameters'])) { // TODO: should use testingEnvironment variable, not query param
                 try {

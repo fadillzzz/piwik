@@ -45,9 +45,7 @@ class DumpConfigTestMockConfig extends Config
 {
     public function __construct($configLocal, $configGlobal, $configCommon, $configCache)
     {
-        parent::__construct();
-
-        $this->settings = new MockIniSettingsProvider($configLocal, $configGlobal, $configCommon, $configCache);
+        parent::__construct(new MockIniSettingsProvider($configLocal, $configGlobal, $configCommon, $configCache));
     }
 }
 
@@ -56,13 +54,6 @@ class DumpConfigTestMockConfig extends Config
  */
 class ConfigTest extends \PHPUnit_Framework_TestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-
-        GlobalSettingsProvider::unsetSingletonInstance();
-    }
-
     public function testUserConfigOverwritesSectionGlobalConfigValue()
     {
         $userFile = PIWIK_INCLUDE_PATH . '/tests/resources/Config/config.ini.php';
