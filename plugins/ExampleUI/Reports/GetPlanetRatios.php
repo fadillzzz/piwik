@@ -47,6 +47,7 @@ class GetPlanetRatios extends Base
                 ->setName('Simple tag cloud')
                 ->setSubCategory('Tag clouds')
                 ->forceViewDataTable(Cloud::ID)
+                ->setOrder(5)
         );
     }
 

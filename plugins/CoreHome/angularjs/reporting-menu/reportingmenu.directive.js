@@ -94,6 +94,7 @@
 
                     var url = $location.path();
                     var activeCategory = piwik.broadcast.getParamValue('category', url);
+                    var activeSubCategory = piwik.broadcast.getParamValue('subcategory', url);
 
                     piwikApi.bulkFetch([
                         {method: 'API.getPagesMetadata'},
@@ -122,6 +123,11 @@
                             angular.forEach(response[0], function (page, key) {
                                 if (page.category.id === categoryId) {
                                     var subcategory = page.subcategory;
+
+                                    if (subcategory.id === activeSubCategory) {
+                                        subcategory.active = true;
+                                    }
+
                                     subcategory.html_url = 'module=CoreHome&action=index&category=' + categoryId + '&subcategory='+ subcategory.id;
                                     category.subcategories.push(subcategory);
                                 }

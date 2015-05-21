@@ -26,6 +26,8 @@ use Piwik\ViewDataTable\Factory as ViewDataTableFactory;
 use Exception;
 use Piwik\Widget\WidgetsList;
 use Piwik\Report\ReportWidgetFactory;
+use Piwik\Widget\Category;
+use Piwik\Widget\SubCategory;
 
 /**
  * Defines a new report. This class contains all information a report defines except the corresponding API method which
