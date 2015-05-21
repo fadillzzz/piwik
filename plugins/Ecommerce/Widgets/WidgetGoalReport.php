@@ -13,7 +13,7 @@ use Piwik\Widget\WidgetConfig;
 use Piwik\Site;
 use Piwik\Piwik;
 
-class WidgetGoalReport extends \Piwik\Plugin\Widget
+class WidgetGoalReport extends \Piwik\Widget\Widget
 {
     public static function configure(WidgetConfig $config)
     {

@@ -9,7 +9,6 @@
 namespace Piwik\Plugins\DevicesDetection;
 
 use Piwik\Menu\MenuAdmin;
-use Piwik\Menu\MenuReporting;
 use Piwik\Piwik;
 
 /**

@@ -17,7 +17,7 @@ use Piwik\UrlHelper;
 use Piwik\View;
 use Piwik\Plugins\SEO\API;
 
-class GetRank extends \Piwik\Plugin\Widget
+class GetRank extends \Piwik\Widget\Widget
 {
     public static function configure(WidgetConfig $config)
     {

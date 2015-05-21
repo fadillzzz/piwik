@@ -12,7 +12,7 @@ use DI\FactoryInterface;
 use Exception;
 use Piwik\Plugin\Controller;
 use Piwik\Plugin\Report;
-use Piwik\Plugin\Widget;
+use Piwik\Widget\Widget;
 use Piwik\Session;
 
 /**

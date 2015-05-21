@@ -44,7 +44,7 @@
                     var firstCategoryName = null;
 
                     angular.forEach(scope.container.widgets, function (widget) {
-                        var category = widget.category.name;
+                        var category = widget.subcategory.name;
                         if (!widgetsByCategory[category]) {
                             widgetsByCategory[category] = [];
                         }

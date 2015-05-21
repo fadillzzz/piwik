@@ -11,7 +11,7 @@ namespace Piwik\Plugins\UserCountryMap\Widgets;
 use Piwik\Widget\WidgetConfig;
 use Piwik\Plugin\Manager as PluginManager;
 
-class GetRealtimeMap extends \Piwik\Plugin\Widget
+class GetRealtimeMap extends \Piwik\Widget\Widget
 {
     public static function configure(WidgetConfig $config)
     {

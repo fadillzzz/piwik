@@ -24,7 +24,7 @@ class GetCity extends Base
         $this->documentation  = Piwik::translate('UserCountry_getCityDocumentation') . '<br/>' . $this->getGeoIPReportDocSuffix();
         $this->metrics        = array('nb_visits', 'nb_uniq_visitors', 'nb_actions');
         $this->hasGoalMetrics = true;
-        $this->order = 8;
+        $this->order = 10;
         $this->subCategory = 'UserCountry_SubmenuLocations';
     }
 

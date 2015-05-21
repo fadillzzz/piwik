@@ -1,20 +1,19 @@
 <div>
     <div ng-if="pageContentUrl" ng-include="pageContentUrl"></div>
 
-    <div ng-repeat="evolutionReport in evolutionReports">
-        <div piwik-widget widget="evolutionReport"></div>
-    </div>
+    <div ng-repeat="evolutionReport in evolutionReports" piwik-widget widget="evolutionReport"></div>
 
-    <div ng-repeat="sparklineReport in sparklineReports">
-        <div piwik-widget widget="sparklineReport"></div>
-    </div>
+    <div ng-repeat="sparklineReport in sparklineReports" piwik-widget widget="sparklineReport"></div>
 
     <div ng-repeat="widget in widgets">
         <div ng-if="!widget.group" piwik-widget widget="widget"></div>
 
         <div ng-if="widget.group" class="row">
-            <div class="col-md-6" ng-repeat="widgetInGroup in widget.group">
-                <div piwik-widget widget="widgetInGroup"></div>
+            <div class="col-md-6">
+                <div ng-repeat="widgetInGroup in widget.left" piwik-widget widget="widgetInGroup"></div>
+            </div>
+            <div class="col-md-6">
+                <div ng-repeat="widgetInGroup in widget.right" piwik-widget widget="widgetInGroup"></div>
             </div>
         </div>
     </div>

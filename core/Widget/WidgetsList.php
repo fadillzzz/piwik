@@ -9,10 +9,10 @@
 namespace Piwik\Widget;
 
 use Piwik\Cache as PiwikCache;
+use Piwik\Container\StaticContainer;
 use Piwik\Development;
 use Piwik\Piwik;
 use Piwik\Plugin\Report;
-use Piwik\Plugin\Widget;
 use Piwik\Plugin\Manager as PluginManager;
 use Piwik\Report\ReportWidgetFactory;
 
@@ -145,7 +145,7 @@ class WidgetsList
         $widgetContainerConfigs = self::getAllWidgetContainerConfigClassNames();
         foreach ($widgetContainerConfigs as $widgetClass) {
             /** @var WidgetContainerConfig $widget */
-            $widget = new $widgetClass;
+            $widget = StaticContainer::get($widgetClass);
             if ($widget->isEnabled()) {
                 $list->addContainer($widget);
             }

@@ -8,7 +8,7 @@
  */
 namespace Piwik\Plugins\ExamplePlugin\Widgets;
 
-use Piwik\Plugin\Widget;
+use Piwik\Widget\Widget;
 use Piwik\Widget\WidgetConfig;
 use Piwik\View;
 

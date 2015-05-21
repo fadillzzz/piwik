@@ -10,7 +10,7 @@ namespace Piwik\Plugins\Live\Widgets;
 
 use Piwik\Widget\WidgetConfig;
 
-class Widget extends \Piwik\Plugin\Widget
+class Widget extends \Piwik\Widget\Widget
 {
     public static function configure(WidgetConfig $config)
     {

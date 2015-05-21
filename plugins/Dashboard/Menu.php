@@ -9,7 +9,6 @@
 namespace Piwik\Plugins\Dashboard;
 
 use Piwik\Db;
-use Piwik\Menu\MenuReporting;
 use Piwik\Menu\MenuTop;
 use Piwik\Piwik;
 use Piwik\Plugins\UsersManager\UserPreferences;

@@ -10,13 +10,14 @@ namespace Piwik\Plugins\UserCountryMap\Widgets;
 
 use Piwik\Widget\WidgetConfig;
 
-class GetVisitorMap extends \Piwik\Plugin\Widget
+class GetVisitorMap extends \Piwik\Widget\Widget
 {
     public static function configure(WidgetConfig $config)
     {
         $config->setCategory('General_Visitors');
+        $config->setSubCategory('UserCountry_SubmenuLocations');
         $config->setName('UserCountryMap_VisitorMap');
-        $config->setModule('UserCountryMap');
         $config->setAction('visitorMap');
+        $config->setOrder(1);
     }
 }

@@ -11,7 +11,7 @@ namespace Piwik\Plugins\Referrers\Widgets;
 use Piwik\Widget\WidgetConfig;
 use Piwik\SettingsPiwik;
 
-class GetKeywordsForPage extends \Piwik\Plugin\Widget
+class GetKeywordsForPage extends \Piwik\Widget\Widget
 {
     public static function configure(WidgetConfig $config)
     {

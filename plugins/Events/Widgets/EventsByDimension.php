@@ -8,6 +8,7 @@
  */
 namespace Piwik\Plugins\Events\Widgets;
 
+use Piwik\Translation\Translator;
 use Piwik\Widget\WidgetContainerConfig;
 
 class EventsByDimension extends WidgetContainerConfig
@@ -16,4 +17,5 @@ class EventsByDimension extends WidgetContainerConfig
     protected $id = 'Events';
     protected $category = 'General_Actions';
     protected $subCategory = 'Events_Events';
+
 }

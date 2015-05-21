@@ -158,14 +158,22 @@
 
                                             groupedWidgets.push(widget);
                                         } else {
-                                            var group = [widget];
-                                            // we move widgets into groups of 2 (the last one before a container can only contain 1)
-                                            if (widgets[i+1] && !shouldBeRenderedWithFullWidth(widgets[i+1])) {
+
+                                            var counter = 0;
+                                            var left = [widget];
+                                            var right = [];
+
+                                            while (widgets[i+1] && !shouldBeRenderedWithFullWidth(widgets[i+1])) {
                                                 i++;
-                                                group.push(widgets[i]);
+                                                counter++;
+                                                if (counter % 2 === 0) {
+                                                    left.push(widgets[i]);
+                                                } else {
+                                                    right.push(widgets[i]);
+                                                }
                                             }
 
-                                            groupedWidgets.push({group: group});
+                                            groupedWidgets.push({group: true, left: left, right: right});
                                         }
                                     }
                                 }

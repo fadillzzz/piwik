@@ -12,7 +12,7 @@ use Piwik\Piwik;
 use Exception;
 
 /**
- * Configures a widget. Use this class to configure a {@link Piwik\Plugin\Widget`} or to
+ * Configures a widget. Use this class to configure a {@link Piwik\Widget\Widget`} or to
  * add a widget to the WidgetsList via {@link WidgetsList::addWidget}.
  *
  * @api since Piwik 2.15
@@ -27,7 +27,7 @@ class WidgetConfig
     protected $name   = '';
     protected $order  = 99;
     protected $isEnabled = true;
-    protected $isStandaloneWidget = true;
+    protected $isWidgetizable = true;
 
     public function getCategory()
     {
@@ -221,15 +221,21 @@ class WidgetConfig
         return WidgetsList::getWidgetUniqueId($this->getModule(), $this->getAction(), $this->getParameters());
     }
 
-    public function setIsNotStandaloneWidget()
+    public function setIsNotWidgetizable()
     {
-        $this->isStandaloneWidget = false;
+        $this->isWidgetizable = false;
         return $this;
     }
 
-    public function isStandaloneWidget()
+    public function setIsWidgetizable()
     {
-        return $this->isStandaloneWidget;
+        $this->isWidgetizable = true;
+        return $this;
+    }
+
+    public function isWidgetizeable()
+    {
+        return $this->isWidgetizable;
     }
 
 

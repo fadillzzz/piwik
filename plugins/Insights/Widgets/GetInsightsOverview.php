@@ -10,7 +10,7 @@ namespace Piwik\Plugins\Insights\Widgets;
 
 use Piwik\Widget\WidgetConfig;
 
-class GetInsightsOverview extends \Piwik\Plugin\Widget
+class GetInsightsOverview extends \Piwik\Widget\Widget
 {
     public static function configure(WidgetConfig $config)
     {

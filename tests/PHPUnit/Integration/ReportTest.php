@@ -18,7 +18,6 @@ use Piwik\Plugins\ExampleTracker\Columns\ExampleDimension;
 use Piwik\Plugins\Referrers\Columns\Keyword;
 use Piwik\Report\ReportWidgetFactory;
 use Piwik\Translate;
-use Piwik\Menu\MenuReporting;
 use Piwik\Plugin\Manager as PluginManager;
 use Piwik\Tests\Framework\Fixture;
 use Piwik\Tests\Framework\TestCase\IntegrationTestCase;
@@ -120,8 +119,6 @@ class ReportTest extends IntegrationTestCase
 
     public function tearDown()
     {
-        WidgetsList::getInstance()->_reset();
-        MenuReporting::getInstance()->unsetInstance();
         unset($_GET['idSite']);
         parent::tearDown();
     }

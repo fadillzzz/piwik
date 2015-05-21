@@ -31,7 +31,7 @@ class GetSiteSearchNoResultKeywords extends SiteSearchBase
             new ExitRate(),
             new AveragePageGenerationTime()
         );
-        $this->order = 16;
+        $this->order = 18;
 
         $this->subCategory = 'Actions_SubmenuSitesearch';
     }

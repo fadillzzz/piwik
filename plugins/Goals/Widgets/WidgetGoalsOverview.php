@@ -10,7 +10,7 @@ namespace Piwik\Plugins\Goals\Widgets;
 
 use Piwik\Widget\WidgetConfig;
 
-class WidgetGoalsOverview extends \Piwik\Plugin\Widget
+class WidgetGoalsOverview extends \Piwik\Widget\Widget
 {
     public static function configure(WidgetConfig $config)
     {

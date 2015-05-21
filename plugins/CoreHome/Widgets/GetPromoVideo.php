@@ -8,7 +8,7 @@
  */
 namespace Piwik\Plugins\CoreHome\Widgets;
 
-use Piwik\Plugin\Widget;
+use Piwik\Widget\Widget;
 use Piwik\Widget\WidgetConfig;
 use Piwik\Translation\Translator;
 use Piwik\View;

@@ -12,7 +12,7 @@ use Piwik\Piwik;
 use Piwik\Widget\WidgetConfig;
 use Piwik\Plugins\ExampleRssWidget\RssRenderer;
 
-class RssChangelog extends \Piwik\Plugin\Widget
+class RssChangelog extends \Piwik\Widget\Widget
 {
     public static function configure(WidgetConfig $config)
     {

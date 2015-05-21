@@ -10,7 +10,7 @@ namespace Piwik\Plugins\Insights\Widgets;
 
 use Piwik\Widget\WidgetConfig;
 
-class GetOverallMoversAndShakers extends \Piwik\Plugin\Widget
+class GetOverallMoversAndShakers extends \Piwik\Widget\Widget
 {
     public static function configure(WidgetConfig $config)
     {

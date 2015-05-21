@@ -9,7 +9,6 @@
 namespace Piwik\Plugins\ExamplePlugin;
 
 use Piwik\Menu\MenuAdmin;
-use Piwik\Menu\MenuReporting;
 use Piwik\Menu\MenuTop;
 use Piwik\Menu\MenuUser;
 

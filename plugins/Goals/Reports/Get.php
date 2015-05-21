@@ -43,7 +43,9 @@ class Get extends Base
         $config->forceViewDataTable(Evolution::ID);
         $config->setSubCategory('General_Overview');
         $config->setName('General_EvolutionOverPeriod');
+        $config->setAction('getEvolutionGraph');
         $config->setOrder(++$orderId);
+        $config->setParameters(array('columns' => 'nb_conversions'));
         $widgetsList->addWidget($config);
 
         $config = $factory->createWidget();
@@ -64,6 +66,7 @@ class Get extends Base
                 $config->setName($goalTranslated);
                 $config->setSubCategory($name);
                 $config->forceViewDataTable(Evolution::ID);
+                $config->setAction('getEvolutionGraph');
                 $config->setParameters($params);
                 $config->setOrder(++$orderId);
                 $widgetsList->addWidget($config);
@@ -83,7 +86,7 @@ class Get extends Base
                 $config->forceViewDataTable(Sparklines::ID);
                 $config->setParameters($params);
                 $config->setOrder(++$orderId);
-                $config->setIsNotStandaloneWidget();
+                $config->setIsNotWidgetizable();
                 $config->addParameters(array('allow_multiple' => (int) $goal['allow_multiple']));
                 $widgetsList->addWidget($config);
 

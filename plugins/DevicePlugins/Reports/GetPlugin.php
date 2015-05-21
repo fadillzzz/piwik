@@ -23,7 +23,7 @@ class GetPlugin extends Base
         $this->metrics       = array('nb_visits');
         $this->constantRowsCount = true;
         $this->processedMetrics = array('nb_visits_percentage');
-        $this->order = 4;
+        $this->order = 13;
 
         $this->subCategory = 'DevicesDetection_Software';
     }

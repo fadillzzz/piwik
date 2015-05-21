@@ -10,9 +10,8 @@ namespace Piwik\Plugins\Live\Widgets;
 
 use Piwik\Piwik;
 use Piwik\Widget\WidgetConfig;
-use Piwik\Widget\WidgetsList;
 
-class GetVisitorProfilePopup extends \Piwik\Plugin\Widget
+class GetVisitorProfilePopup extends \Piwik\Widget\Widget
 {
 
     public static function configure(WidgetConfig $config)

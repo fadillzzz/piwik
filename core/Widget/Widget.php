@@ -6,12 +6,11 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  *
  */
-namespace Piwik\Plugin;
+namespace Piwik\Widget;
 
 use Piwik\Container\StaticContainer;
 use Piwik\Plugin\Manager as PluginManager;
 use Exception;
-use Piwik\Widget\WidgetConfig;
 
 /**
  * Defines a new widget. You can create a new widget using the console command `./console generate:widget`.
@@ -70,7 +69,7 @@ class Widget
      */
     private static function getAllWidgetClassNames()
     {
-        return PluginManager::getInstance()->findMultipleComponents('Widgets', 'Piwik\\Plugin\\Widget');
+        return PluginManager::getInstance()->findMultipleComponents('Widgets', 'Piwik\\Widget\\Widget');
     }
 
     private static function getModuleFromWidgetClassName($widgetClass)
@@ -115,7 +114,7 @@ class Widget
         }
 
         /** @var Widget[] $widgetContainer */
-        $widgets = $plugin->findMultipleComponents('Widgets', 'Piwik\\Plugin\\Widget');
+        $widgets = $plugin->findMultipleComponents('Widgets', 'Piwik\\Widget\\Widget');
 
         foreach ($widgets as $widgetClass) {
             $config = self::getWidgetConfigForClassName($widgetClass);

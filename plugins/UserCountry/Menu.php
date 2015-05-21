@@ -9,7 +9,6 @@
 namespace Piwik\Plugins\UserCountry;
 
 use Piwik\Menu\MenuAdmin;
-use Piwik\Menu\MenuReporting;
 use Piwik\Piwik;
 
 class Menu extends \Piwik\Plugin\Menu

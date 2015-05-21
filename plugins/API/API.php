@@ -388,7 +388,9 @@ class API extends \Piwik\Plugin\API
 
             foreach ($widgets as $widget) {
 
-                if (!$widget->isStandaloneWidget()) {
+                /** @var WidgetConfig $widget */
+
+                if (!$widget->isWidgetizeable()) {
                     continue;
                 }
 

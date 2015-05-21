@@ -61,7 +61,7 @@ class WidgetContainerConfig extends WidgetConfig
         return $this->widgets;
     }
 
-    public function isStandaloneWidget()
+    public function isWidgetizeable()
     {
         return false;
     }

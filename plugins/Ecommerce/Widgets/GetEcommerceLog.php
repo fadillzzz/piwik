@@ -12,7 +12,7 @@ use Piwik\Common;
 use Piwik\Widget\WidgetConfig;
 use Piwik\Site;
 
-class GetEcommerceLog extends \Piwik\Plugin\Widget
+class GetEcommerceLog extends \Piwik\Widget\Widget
 {
     public static function configure(WidgetConfig $config)
     {

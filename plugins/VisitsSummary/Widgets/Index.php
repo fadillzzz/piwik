@@ -10,7 +10,7 @@ namespace Piwik\Plugins\VisitsSummary\Widgets;
 
 use Piwik\Widget\WidgetConfig;
 
-class Index extends \Piwik\Plugin\Widget
+class Index extends \Piwik\Widget\Widget
 {
     public static function configure(WidgetConfig $config)
     {
